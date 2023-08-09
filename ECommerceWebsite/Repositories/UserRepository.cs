@@ -1,5 +1,7 @@
 ﻿using ECommerceWebsite.Data;
+using ECommerceWebsite.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceWebsite.Repositories
 {
@@ -9,12 +11,26 @@ namespace ECommerceWebsite.Repositories
         public UserRepository(DataContext db)
         {
             _db=db;
-            //return await _db.Users.AnyAsync(user => user.UserName == username.ToLower());
         }
 
-        public Task<bool> UserExists(string username)
+        public Task AddUser(AppUser user)
         {
-            throw new NotImplementedException();
+            _db.Users.Add(user);
+            return _db.SaveChangesAsync();
+
         }
+
+        public Task RegisterUser(AppUser user)
+        {
+            _db.Users.Add(user);
+            return  _db.SaveChangesAsync();
+        }
+
+        public async Task<bool> UserExists(string username)
+        {
+            var result = await _db.Users.AnyAsync(user => user.UserName == username.ToLower());
+            return result;             
+        }
+
     }
 }

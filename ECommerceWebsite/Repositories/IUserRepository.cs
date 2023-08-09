@@ -1,8 +1,12 @@
-﻿namespace ECommerceWebsite.Repositories
+﻿using ECommerceWebsite.Models;
+
+namespace ECommerceWebsite.Repositories
 {
     public interface IUserRepository
     {
         Task<bool> UserExists(string username);
-        //Task RegisterUser(AppUser user);
+        Task RegisterUser(AppUser user);
+        Task AddUser(AppUser user);
+
     }
 }
