@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="obj\Debug\net7.0\.NETCoreApp,Version=v7.0.AssemblyAttributes.cs" />
+    <Compile Include="obj\Debug\net7.0\ECommerceWebsite.AssemblyInfo.cs" />
+    <Compile Include="obj\Debug\net7.0\ECommerceWebsite.GlobalUsings.g.cs" />
+    <Compile Include="obj\Debug\net7.0\ECommerceWebsite.RazorAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net7.0\appsettings.Development.json" />
+    <Content Include="bin\Debug\net7.0\appsettings.json" />
+    <Content Include="bin\Debug\net7.0\ECommerceWebsite.deps.json" />
+    <Content Include="bin\Debug\net7.0\ECommerceWebsite.runtimeconfig.json" />
+    <Content Include="bin\Debug\net7.0\ECommerceWebsite.staticwebassets.runtime.json" />
+    <Content Include="bin\Debug\net7.0\Front End\build\config\.eslintrc.json" />
+    <Content Include="bin\Debug\net7.0\Front End\build\npm\.eslintrc.json" />
+    <Content Include="bin\Debug\net7.0\Front End\dist\js\.eslintrc.json" />
+    <Content Include="obj\Debug\net7.0\ECommerceWebsite.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\net7.0\project.razor.vs.json" />
+    <Content Include="obj\Debug\net7.0\scopedcss\bundle\ECommerceWebsite.styles.css" />
+    <Content Include="obj\Debug\net7.0\scopedcss\projectbundle\ECommerceWebsite.bundle.scp.css" />
+    <Content Include="obj\Debug\net7.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css" />
+    <Content Include="obj\Debug\net7.0\staticwebassets.build.json" />
+    <Content Include="obj\Debug\net7.0\staticwebassets.development.json" />
+    <Content Include="obj\Debug\net7.0\staticwebassets.pack.json" />
+    <Content Include="obj\ECommerceWebsite.csproj.nuget.dgspec.json" />
+    <Content Include="obj\project.assets.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\net7.0\ECommerceWebsite.dll" />
+    <None Include="bin\Debug\net7.0\ECommerceWebsite.exe" />
+    <None Include="bin\Debug\net7.0\ECommerceWebsite.pdb" />
+    <None Include="obj\Debug\net7.0\apphost.exe" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.AssemblyInfoInputs.cache" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.assets.cache" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.csproj.AssemblyReference.cache" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.csproj.BuildWithSkipAnalyzers" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.csproj.CoreCompileInputs.cache" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.dll" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.GeneratedMSBuildEditorConfig.editorconfig" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.genruntimeconfig.cache" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.MvcApplicationPartsAssemblyInfo.cache" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.pdb" />
+    <None Include="obj\Debug\net7.0\ECommerceWebsite.RazorAssemblyInfo.cache" />
+    <None Include="obj\Debug\net7.0\refint\ECommerceWebsite.dll" />
+    <None Include="obj\Debug\net7.0\ref\ECommerceWebsite.dll" />
+    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.build.ECommerceWebsite.props" />
+    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.ECommerceWebsite.props" />
+    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.ECommerceWebsite.props" />
+    <None Include="obj\Debug\net7.0\staticwebassets\msbuild.ECommerceWebsite.Microsoft.AspNetCore.StaticWebAssets.props" />
+    <None Include="obj\Debug\net7.0\_IsIncrementalBuild" />
+    <None Include="obj\ECommerceWebsite.csproj.nuget.g.props" />
+    <None Include="obj\ECommerceWebsite.csproj.nuget.g.targets" />
+    <None Include="obj\project.nuget.cache" />
+  </ItemGroup>
+
+</Project>
