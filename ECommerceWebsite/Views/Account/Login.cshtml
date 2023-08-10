@@ -38,10 +38,10 @@
                 @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                 {
                     <div class="input-group mb-3">
-                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Username", required = "required" })
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone Number", required = "required", type = "tel" })
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-user"></span>
+                                <span class="fas fa-phone"></span>
                             </div>
                         </div>
                     </div>

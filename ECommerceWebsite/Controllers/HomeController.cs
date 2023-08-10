@@ -16,17 +16,17 @@ namespace ECommerceWebsite.Controllers
 
         public IActionResult Index()
         {
+            //LoginDTO model = new();
+            //ViewBag.Message = TempData["Message"];
+            //ViewBag.Type = TempData["Type"];
+            //TempData.Remove("Message");
+            //TempData.Remove("Type");
             return View();
         }
 
         public IActionResult Privacy()
         {
-            LoginDTO model = new();
-            ViewBag.Message = TempData["Message"];
-            ViewBag.Type = TempData["Type"];
-            TempData.Remove("Message");
-            TempData.Remove("Type");
-            return View(model);
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

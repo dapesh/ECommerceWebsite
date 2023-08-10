@@ -18,16 +18,9 @@ namespace ECommerceWebsite.Controllers
 
         [HttpGet]
        
-        public IActionResult Register()
-        
-        
+        public IActionResult Register()       
         {
-            RegisterDTO model = new();
-            ViewBag.Message = TempData["Message"];
-            ViewBag.Type = TempData["Type"];
-            TempData.Remove("Message");
-            TempData.Remove("Type");
-            return View(model);
+            return View();
         }
 
         [HttpPost]
@@ -38,7 +31,6 @@ namespace ECommerceWebsite.Controllers
                 TempData["Message"] = "Username is already taken";
                 TempData["Type"] = "error";
                 return RedirectToAction("Register");
-
             }
             using var hmac = new HMACSHA512();
             var user = new AppUser
@@ -52,13 +44,17 @@ namespace ECommerceWebsite.Controllers
             await _userRepository.RegisterUser(user);
             TempData["Message"] = "Registered successfully";
             TempData["Type"] = "success";
-            return RedirectToAction("Register");
+            return RedirectToAction("Login","Account");
         }
 
-        public IActionResult Login()
-        
+        public IActionResult Login()        
         {
-            return View();
+            LoginDTO model = new();
+            ViewBag.Message = TempData["Message"];
+            ViewBag.Type = TempData["Type"];
+            TempData.Remove("Message");
+            TempData.Remove("Type");
+            return View(model);
         }
         [HttpPost]
         public async Task<ActionResult> Login(LoginDTO loginDTO)
@@ -86,7 +82,7 @@ namespace ECommerceWebsite.Controllers
 
             TempData["Message"] = "Logged In successfully";
             TempData["Type"] = "success";
-            return RedirectToAction("Privacy","Home");
+            return RedirectToAction("Index","Home");
         }
     }
 }
