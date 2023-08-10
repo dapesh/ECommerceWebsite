@@ -1,4 +1,10 @@
-﻿@model ECommerceWebsite.DTOs.RegisterDTO
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model ECommerceWebsite.DTOs.LoginDTO
 @{
     Layout = null;
 }
@@ -27,9 +33,9 @@
     <div class="registration-container">
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Register a new account</p>
+                <p class="login-box-msg">Login Here</p>
 
-                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                 {
                     <div class="input-group mb-3">
                         @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Username", required = "required" })
@@ -53,7 +59,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
                         </div>
                     </div>
                 }
