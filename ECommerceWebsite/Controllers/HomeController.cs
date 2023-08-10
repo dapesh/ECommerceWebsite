@@ -1,4 +1,5 @@
-﻿using ECommerceWebsite.Models;
+﻿using ECommerceWebsite.DTOs;
+using ECommerceWebsite.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -20,7 +21,12 @@ namespace ECommerceWebsite.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            LoginDTO model = new();
+            ViewBag.Message = TempData["Message"];
+            ViewBag.Type = TempData["Type"];
+            TempData.Remove("Message");
+            TempData.Remove("Type");
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

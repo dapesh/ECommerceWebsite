@@ -26,11 +26,21 @@ namespace ECommerceWebsite.Repositories
             return  _db.SaveChangesAsync();
         }
 
-        public async Task<bool> UserExists(string username)
+        public Task<bool> PhoneNumberExists(string phonenumber)
         {
-            var result = await _db.Users.AnyAsync(user => user.UserName == username.ToLower());
+            var result =  _db.Users.AnyAsync(user => user.PhoneNumber == phonenumber);
             return result;             
         }
 
+        public Task GetDataByPhoneNumberAsync(string phoneNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<AppUser> GetUserByPhoneNumberAsync(string phoneNumber)
+        {
+            var result = await _db.Users.SingleOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+            return result;
+        }
     }
 }
