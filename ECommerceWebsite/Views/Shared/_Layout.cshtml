@@ -25,14 +25,14 @@
     <!-- summernote -->
     <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="sidebar-mini" id="navCursor">
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    <a id="onchangeNav" onclick="NavExpandCollpse()" class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="index3.html" class="nav-link">Home</a>
@@ -328,6 +328,20 @@
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
+        function NavExpandCollpse(){
+            debugger
+            var Value = document.getElementById('navCursor');
+            var className=Value.className;
+            if (className == "sidebar-mini"){
+                $("#navCursor").removeClass("sidebar-mini");
+                $("#navCursor").addClass("sidebar-mini sidebar-collapse");
+            }
+            else{
+                $("#navCursor").removeClass("sidebar-mini sidebar-collapse");
+                $("#navCursor").addClass("sidebar-mini");
+            }
+    
+        }
     </script>
     <!-- Bootstrap 4 -->
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

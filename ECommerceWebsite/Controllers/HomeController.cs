@@ -16,11 +16,10 @@ namespace ECommerceWebsite.Controllers
 
         public IActionResult Index()
         {
-            //LoginDTO model = new();
-            //ViewBag.Message = TempData["Message"];
-            //ViewBag.Type = TempData["Type"];
-            //TempData.Remove("Message");
-            //TempData.Remove("Type");
+            ViewBag.Message = TempData["Message"];
+            ViewBag.Type = TempData["Type"];
+            TempData.Remove("Message");
+            TempData.Remove("Type");
             return View();
         }
 

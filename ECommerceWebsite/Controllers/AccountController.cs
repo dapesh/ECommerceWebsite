@@ -49,12 +49,11 @@ namespace ECommerceWebsite.Controllers
 
         public IActionResult Login()        
         {
-            LoginDTO model = new();
             ViewBag.Message = TempData["Message"];
             ViewBag.Type = TempData["Type"];
             TempData.Remove("Message");
             TempData.Remove("Type");
-            return View(model);
+            return View();
         }
         [HttpPost]
         public async Task<ActionResult> Login(LoginDTO loginDTO)
@@ -65,11 +64,6 @@ namespace ECommerceWebsite.Controllers
                 TempData["Message"] = "Invalid Phone Number";
 
             }
-
-            if (user == null)
-            {
-                TempData["Message"] = "Invalid Username";
-            } 
             using var hmac = new HMACSHA512(user.PasswordSalt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password));
             for (var i = 0; i < computedHash.Length; i++)
@@ -77,6 +71,8 @@ namespace ECommerceWebsite.Controllers
                 if (computedHash[i] != user.PasswordHash[i])
                 {
                     TempData["Message"] = "Incorrect Password";
+                    TempData["Type"] = "error";
+                    return RedirectToAction("Login", "Account");
                 }
             }
 
