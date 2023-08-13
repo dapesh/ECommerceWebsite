@@ -74,8 +74,7 @@
 
                         <!-- Repeat similar blocks for other form fields -->
                         <!-- Trigger the modal with a button -->
-                        <a data-toggle="modal" data-target="#myModal" style="color:red; cursor:pointer" title="Forgot Password">Forgot Password</a>
-
+                        <a data-toggle="modal" data-target="#myModal" class="forgot-password-link" title="Forgot Password">Forgot Password</a>
                         <!-- Modal -->
                         <div id="myModal" class="modal fade" role="dialog">
                             <div class="modal-dialog">
@@ -90,10 +89,13 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Email address</label>
-                                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                            <input type="email" class="form-control" id="emailForPasswordReset" aria-describedby="emailHelp" placeholder="Enter email">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
+                                        <div class="float-left" style="width:395px">
+                                            <button type="button" class="btn btn-primary" id="saveButton">Save</button>
+                                        </div>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
@@ -152,5 +154,15 @@
         margin: 0 0 20px 0;
         font-weight: 300;
         font-size: 28px;
+    }
+
+    .forgot-password-link {
+        color: #dc3545 !important;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .forgot-password-link:hover {
+        text-decoration: underline;
+            color: #dc3545 !important;
     }
 </style>
