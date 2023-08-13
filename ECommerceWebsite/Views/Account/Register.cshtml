@@ -2,6 +2,17 @@
 @{
     Layout = null;
 }
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery Validation -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+<!-- jQuery Unobtrusive Validation (if needed) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="~/Scripts/jquery.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 <!-- Font Awesome -->
 <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
@@ -22,46 +33,75 @@
 <script src="../../dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/demo.js"></script>
+<body style="background-color:#1111">
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="registration-container" style="margin-top:200px">
+            <div class="card">
+                <div class="card-body login-card-body">
+                    <h1 class="login-box-msg">Register a new account</h1>
 
-<div class="login-box d-flex justify-content-center align-items-center">
-    <div class="registration-container">
-        <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">Register a new account</p>
-
-                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-                {
-                    <div class="input-group mb-3">
-                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone Number", required = "required", type = "tel" })
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-phone"></span>
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                    {
+                        <span class="text-danger">@Html.ValidationMessageFor(m => m.PhoneNumber)</span>
+                        <div class="input-group mb-3">
+                            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone Number", required = "required", type = "tel" })
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-phone"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-
-                    <div class="input-group mb-3">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password", required = "required" })
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                        <span class="text-danger">@Html.ValidationMessageFor(m => m.UserName)</span>
+                        <div class="input-group mb-3">
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "User Name", required = "required", type = "username" })
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Repeat similar blocks for other form fields -->
-
-                    <div class="row">
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                        <span class="text-danger">@Html.ValidationMessageFor(m => m.Email)</span>
+                        <div class="input-group mb-3">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email Address", required = "required", type = "email" })
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                }
+                        <span class="text-danger">@Html.ValidationMessageFor(m => m.Password)</span>
+                        <div class="input-group mb-3">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password", required = "required", id = "password" })
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="password-toggle fas fa-eye-slash" toggle="password" onclick="togglePasswordVisibility('password')"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-danger">@Html.ValidationMessageFor(m => m.ConfirmPassword)</span>
+                        <div class="input-group mb-3">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm Password", required = "required", id = "confirmPassword" })
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="password-toggle fas fa-eye-slash" toggle="confirmPassword" onclick="togglePasswordVisibility('confirmPassword')"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Repeat similar blocks for other form fields -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-block">Register</button>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+</body>
 
                                 <script>
 
@@ -83,4 +123,30 @@
         
     
   });
+
+        function togglePasswordVisibility(inputId) {
+            var input = document.getElementById(inputId);
+            var icon = document.querySelector(`[toggle="${inputId}"]`);
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            }
+        }
+
+
+
 </script>
+
+<style>
+    h1 {
+        margin: 0 0 20px 0;
+        font-weight: 300;
+        font-size: 28px;
+    }
+</style>

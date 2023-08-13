@@ -20,31 +20,40 @@ namespace ECommerceWebsite.Controllers
        
         public IActionResult Register()       
         {
-            return View();
+            ViewBag.Message = TempData["Message"];
+            ViewBag.Type = TempData["Type"];
+            TempData.Remove("Message");
+            TempData.Remove("Type");
+            var model = new RegisterDTO();
+            return View(model);
         }
 
         [HttpPost]
         public async Task<ActionResult<UserDTO>> Register(RegisterDTO model)
         {
-            if (await _userRepository.PhoneNumberExists(model.PhoneNumber))
+            if (ModelState.IsValid)
             {
-                TempData["Message"] = "Username is already taken";
-                TempData["Type"] = "error";
-                return RedirectToAction("Register");
+                if (await _userRepository.PhoneNumberExists(model.PhoneNumber))
+                {
+                    TempData["Message"] = "This Phone Number already taken. Please choose the different one.";
+                    TempData["Type"] = "error";
+                    return RedirectToAction("Register");
+                }
+                using var hmac = new HMACSHA512();
+                var user = new AppUser
+                {
+                    PhoneNumber = model.PhoneNumber,
+                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password)),
+                    PasswordSalt = hmac.Key,
+                    Email = model.Email,
+                    Username = model.UserName
+                };
+                await _userRepository.RegisterUser(user);
+                TempData["Message"] = "Registered successfully";
+                TempData["Type"] = "success";
             }
-            using var hmac = new HMACSHA512();
-            var user = new AppUser
-            {
-                PhoneNumber = model.PhoneNumber,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password)),
-                PasswordSalt = hmac.Key,
-                Email = "Admin@123",
-                Username = "Admin"
-            };
-            await _userRepository.RegisterUser(user);
-            TempData["Message"] = "Registered successfully";
-            TempData["Type"] = "success";
-            return RedirectToAction("Login","Account");
+            return RedirectToAction("Login", "Account");
+
         }
 
         public IActionResult Login()        
