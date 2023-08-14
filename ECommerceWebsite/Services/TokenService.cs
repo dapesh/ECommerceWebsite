@@ -1,4 +1,5 @@
-﻿using ECommerceWebsite.Models;
+﻿using Azure;
+using ECommerceWebsite.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -34,6 +35,13 @@ namespace ECommerceWebsite.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             string encodedToken = tokenHandler.WriteToken(token);
+            CookieOptions options = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Make sure to use HTTPS
+                Expires = DateTime.UtcNow.AddHours(1) // Set cookie expiration
+            };
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("token", encodedToken, options);
             return encodedToken.ToString();
         }
 

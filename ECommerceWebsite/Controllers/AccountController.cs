@@ -3,6 +3,7 @@ using ECommerceWebsite.Repositories;
 using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -41,6 +42,7 @@ namespace ECommerceWebsite.Controllers
         public async Task<ActionResult> Login(LoginDTO loginDTO)
         {
             var user = await _unitOfWork.UserRepository.LoginUser(loginDTO);
+           
             TempData["Message"] = user.Message;
             TempData["Type"] = user.Type;
             if(user.StatusCode==StatusCodes.Status200OK)
