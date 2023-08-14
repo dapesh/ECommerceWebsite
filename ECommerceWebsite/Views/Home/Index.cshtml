@@ -26,8 +26,8 @@
 
     $(function () {
         debugger;
-        var message = "@ViewBag.Message";
-        var type = "@ViewBag.Type";
+        var message = '@TempData["Message"]';
+        var type = '@TempData["Type"]';
         var responseClass = "bg-success";
         if (type.toLowerCase() == "error") {
             responseClass = "bg-danger";

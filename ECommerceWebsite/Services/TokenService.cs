@@ -34,13 +34,6 @@ namespace ECommerceWebsite.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             string encodedToken = tokenHandler.WriteToken(token);
-            var cookieOptions = new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddHours(1), // Set the cookie expiration time
-                HttpOnly = true, // The cookie can only be accessed by the server
-                SameSite = SameSiteMode.Strict, // Configure same-site policy
-                Secure = true // Only send the cookie over HTTPS
-            };
             return encodedToken.ToString();
         }
 

@@ -18,17 +18,10 @@ namespace ECommerceWebsite.Controllers
             _logger = logger;
             _tokenService = tokenService;
         }
-        //[Authorize]
+        [Authorize]
         public IActionResult Index()
         {
-            var result = _tokenService.GetMobilePhoneFromToken();
-            var serializedUserDto = TempData["UserDto"] as string;
-            var userdto = JsonConvert.DeserializeObject<UserDTO>(serializedUserDto);
-            ViewBag.Message = TempData["Message"];
-            ViewBag.Type = TempData["Type"];
-            TempData.Remove("Message");
-            TempData.Remove("Type");
-            return View(userdto);
+            return View();
         }
 
         public IActionResult Privacy()

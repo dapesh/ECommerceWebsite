@@ -6,8 +6,8 @@ namespace ECommerceWebsite.Repositories
     public interface IUserRepository
     {
         Task<bool> PhoneNumberExists(string phoneNumber);
-        Task RegisterUser(AppUser user);
-        Task<AppUser> GetUserByPhoneNumberAsync(string phoneNumber);
+        Task<Common> RegisterUser(RegisterDTO user);
+        Task<Common> LoginUser(LoginDTO user);
         Task AddUser(AppUser user);
 
     }
