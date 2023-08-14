@@ -1,8 +1,12 @@
 ﻿using ECommerceWebsite.DTOs;
 using ECommerceWebsite.Models;
 using ECommerceWebsite.Repositories;
+using ECommerceWebsite.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,10 +14,12 @@ namespace ECommerceWebsite.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly ITokenService _tokenService;
         private readonly IUserRepository _userRepository;
-        public AccountController(IUserRepository userRepository)
+        public AccountController(IUserRepository userRepository, ITokenService tokenService)
         {
             _userRepository = userRepository;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -71,6 +77,8 @@ namespace ECommerceWebsite.Controllers
             if (user == null)
             {
                 TempData["Message"] = "Invalid Phone Number";
+                TempData["Type"] = "error";
+                return RedirectToAction("Login", "Account");
 
             }
             using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -84,7 +92,13 @@ namespace ECommerceWebsite.Controllers
                     return RedirectToAction("Login", "Account");
                 }
             }
-
+            var userdto = new UserDTO
+            {
+                PhoneNumber = user.PhoneNumber,
+                Token = _tokenService.CreateToken(user)
+            };
+            var serializedUserDto = JsonConvert.SerializeObject(userdto);
+            TempData["UserDto"] = serializedUserDto;
             TempData["Message"] = "Logged In successfully";
             TempData["Type"] = "success";
             return RedirectToAction("Index","Home");
