@@ -89,12 +89,15 @@
                                 </div>
                             </div>
                         </div>
+                        <a asp-action="ForgotPassword" asp-asp-controller="Account" class="forgot-password-link" title="Forgot Password">Forgot Password</a>
 
                         <!-- Repeat similar blocks for other form fields -->
                         <!-- Trigger the modal with a button -->
-                        <a data-toggle="modal" data-target="#myModal" class="forgot-password-link" title="Forgot Password">Forgot Password</a>
+
+@*                         <a data-toggle="modal" data-target="#myModal" class="forgot-password-link" title="Forgot Password">Forgot Password</a>
+ *@                        
                         <!-- Modal -->
-                        <div id="myModal" class="modal fade" role="dialog">
+                        @* <div id="myModal" class="modal fade" role="dialog">
                             <div class="modal-dialog">
 
                                 <!-- Modal content-->
@@ -119,7 +122,7 @@
                                 </div>
 
                             </div>
-                        </div>
+                    </div> *@
                         <div class="row">
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary btn-block">Login</button>

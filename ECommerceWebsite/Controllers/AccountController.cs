@@ -1,6 +1,9 @@
 ﻿using ECommerceWebsite.DTOs;
+using ECommerceWebsite.Interface;
+using ECommerceWebsite.Models;
 using ECommerceWebsite.Repositories;
 using ECommerceWebsite.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -13,11 +16,11 @@ namespace ECommerceWebsite.Controllers
     public class AccountController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly UserManager<ApplicationUser> _userManager;
-
-        public AccountController(IUnitOfWork unitOfWork)
+        private readonly IMailService _mailService;
+        public AccountController(IUnitOfWork unitOfWork, IMailService mailService)
         {
             _unitOfWork = unitOfWork;
+            _mailService = mailService;
         }
 
         [HttpGet]
@@ -60,11 +63,23 @@ namespace ECommerceWebsite.Controllers
         {
             return View();
         }
+       
+
         [HttpPost]
-        public  ActionResult ForgotPassword(string Email)
+        public async Task<IActionResult> Send([FromForm] MailRequest request)
         {
-            var token = Guid.NewGuid();
-            return View();
+            try
+            {
+                MailRequest request1 = new MailRequest();
+                request1.ToEmail = request.ToEmail;
+                await _mailService.SendEmailAsync(request1);
+                return Ok(new { Message = "Email sent successfully." });
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, new { Message = "An error occurred while sending the email.", Error = ex.Message });
+            }
         }
     }
 }
