@@ -9,5 +9,15 @@ namespace ECommerceWebsite.Data
         {
         }
         public DbSet<AppUser> Users { get; set; }
+        public DbSet<OtpHandler> OtpManger { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OtpHandler>().Property(x=>x.Otp).HasMaxLength(50);
+            modelBuilder.Entity<OtpHandler>().Property(x=>x.isVerified).HasMaxLength(1);
+            modelBuilder.Entity<OtpHandler>().HasKey(x => x.Id);
+            modelBuilder.Entity<OtpHandler>().Property(x => x.UserName).HasMaxLength(50);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

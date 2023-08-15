@@ -1,9 +1,12 @@
 ﻿using ECommerceWebsite.Data;
+using ECommerceWebsite.Interface;
+using ECommerceWebsite.Models;
 using ECommerceWebsite.Repositories;
 using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -24,6 +27,8 @@ namespace ECommerceWebsite
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITokenService, TokenService>();
+            services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+            services.AddTransient<IMailService, MailService>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
                             .AddJwtBearer(options =>

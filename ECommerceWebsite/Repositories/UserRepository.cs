@@ -127,5 +127,6 @@ namespace ECommerceWebsite.Repositories
             var result = _db.Users.FirstOrDefault(user => user.Email == email);
             return result;
         }
+
     }
 }
