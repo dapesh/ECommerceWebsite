@@ -1,6 +1,7 @@
 ﻿using ECommerceWebsite.DTOs;
 using ECommerceWebsite.Repositories;
 using ECommerceWebsite.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -12,6 +13,8 @@ namespace ECommerceWebsite.Controllers
     public class AccountController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        //private readonly UserManager<ApplicationUser> _userManager;
+
         public AccountController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -28,8 +31,11 @@ namespace ECommerceWebsite.Controllers
         public async Task<ActionResult<UserDTO>> Register(RegisterDTO model)
         {
             var common = await _unitOfWork.UserRepository.RegisterUser(model);
-            TempData["Message"] = common.Message;
-            TempData["Type"] = common.Type;
+            if (common.StatusCode == StatusCodes.Status200OK)
+            {
+                TempData["Message"] = common.Message;
+                TempData["Type"] = common.Type;
+            }
             return RedirectToAction("Login", "Account");
 
         }
@@ -49,6 +55,16 @@ namespace ECommerceWebsite.Controllers
                 return RedirectToAction("Index", "Home");
             else
                 return RedirectToAction("Login", "Account");
+        }
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public  ActionResult ForgotPassword(string Email)
+        {
+            var token = Guid.NewGuid();
+            return View();
         }
     }
 }

@@ -3,6 +3,7 @@ using ECommerceWebsite.DTOs;
 using ECommerceWebsite.Models;
 using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
@@ -76,11 +77,6 @@ namespace ECommerceWebsite.Repositories
             return result;             
         }
 
-        public Task GetDataByPhoneNumberAsync(string phoneNumber)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Common> LoginUser(LoginDTO model)
         {
             var result = await _db.Users.SingleOrDefaultAsync(x => x.PhoneNumber == model.PhoneNumber);
@@ -118,6 +114,18 @@ namespace ECommerceWebsite.Repositories
                 Type = "success",
                 StatusCode = StatusCodes.Status200OK
             };
+        }
+
+        public ActionResult<AppUser> GetUserByPhoneNumberAsync(string mobileNumber)
+        {
+            var result = _db.Users.FirstOrDefault(user => user.PhoneNumber == mobileNumber);
+            return result;
+        }
+
+        public ActionResult<AppUser> GetUserByEmailAsync(string email)
+        {
+            var result = _db.Users.FirstOrDefault(user => user.Email == email);
+            return result;
         }
     }
 }

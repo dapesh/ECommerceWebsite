@@ -8,6 +8,24 @@
 @{
     Layout = null;
 }
+<style>
+    h1 {
+        margin: 0 0 20px 0;
+        font-weight: 300;
+        font-size: 28px;
+    }
+
+    .forgot-password-link {
+        color: #dc3545 !important;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+        .forgot-password-link:hover {
+            text-decoration: underline;
+            color: #dc3545 !important;
+        }
+</style>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- jQuery Validation -->
@@ -82,9 +100,9 @@
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        
+
                                         <button type="button" class="close" data-dismiss="modal" title="Close">&times;</button>
-                                
+
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
@@ -94,7 +112,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <div class="float-left" style="width:395px">
-                                            <button type="button" class="btn btn-primary" id="saveButton">Save</button>
+                                            <button type="button" class="btn btn-primary" onclick="GetUserByEmailAsync()" id="saveButton">Save</button>
                                         </div>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                     </div>
@@ -115,53 +133,53 @@
 </body>
 
 
-                                <script>
 
-  $(function() {
-        var message = '@TempData["Message"]';
-        var type = '@TempData["Type"]';
-        var responseClass = "bg-success";
-        if (type.toLowerCase() == "error"){
-            responseClass = "bg-danger";
-        }
-      
-        if(message!=''){
-            $(document).Toasts('create', {
-                class: responseClass,
-                body: message
-            })
-        }
-  });
-    function togglePasswordVisibility(inputId) {
-        debugger;
-        var input = document.getElementById(inputId);
-        var icon = document.querySelector(`[toggle="${inputId}"]`);
+    <script>
+        $(function () {
+            var message = '@TempData["Message"]';
+            var type = '@TempData["Type"]';
+            var responseClass = "bg-success";
+            if (type.toLowerCase() == "error") {
+                responseClass = "bg-danger";
+            }
 
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
-        } else {
-            input.type = "password";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
-        }
-    }
-</script>
-<style>
-    h1 {
-        margin: 0 0 20px 0;
-        font-weight: 300;
-        font-size: 28px;
-    }
+            if (message != '') {
+                $(document).Toasts('create', {
+                    class: responseClass,
+                    body: message
+                })
+            }
+        });
+        function togglePasswordVisibility(inputId) {
+            debugger;
+            var input = document.getElementById(inputId);
+            var icon = document.querySelector(`[toggle="${inputId}"]`);
 
-    .forgot-password-link {
-        color: #dc3545 !important;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .forgot-password-link:hover {
-        text-decoration: underline;
-            color: #dc3545 !important;
-    }
-</style>
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            }
+        }
+            
+        function GetUserByEmailAsync() {
+            var email = $("#emailForPasswordReset").val();
+            alert(email);
+                $.ajax({
+                    url: "@Url.Action("ForgotPassword", "Account")", 
+                    type: "POST",
+                    data: { Email: email },
+                    success: function (response) {
+                        console.log("Data saved successfully:", response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                    }
+            });
+        }
+    </script>
+
