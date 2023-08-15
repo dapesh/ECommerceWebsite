@@ -48,9 +48,6 @@ namespace ECommerceWebsite.Services
         public string GetMobilePhoneFromToken()
         {
             var httpContext = _httpContextAccessor.HttpContext;
-            string storedToken = _httpContextAccessor.HttpContext.Session.GetString("EncodedToken");
-
-
             var authorizationHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
 
             if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))

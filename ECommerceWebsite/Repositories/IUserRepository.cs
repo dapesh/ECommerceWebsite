@@ -1,5 +1,6 @@
 ﻿using ECommerceWebsite.DTOs;
 using ECommerceWebsite.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceWebsite.Repositories
 {
@@ -9,6 +10,8 @@ namespace ECommerceWebsite.Repositories
         Task<Common> RegisterUser(RegisterDTO user);
         Task<Common> LoginUser(LoginDTO user);
         Task AddUser(AppUser user);
+        ActionResult<AppUser> GetUserByPhoneNumberAsync(string phoneNumber);
+        ActionResult<AppUser> GetUserByEmailAsync(string email);
 
     }
 }
