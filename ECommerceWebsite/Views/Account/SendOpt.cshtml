@@ -1,0 +1,27 @@
+﻿@using (Html.BeginForm("VerifyOtp", "Account", FormMethod.Get, new { @class = "needs-validation", novalidate = "novalidate" }))
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">OTP Verification</h3>
+                        </div>
+                        <div class="card-body">
+                            <input type="hidden" value="@TempData["Email"]" name="email">
+                            @* Add your conditional alert message here if needed *@
+                            <div class="form-group">
+                                <label for="otp">Enter OTP:</label>
+                                <input type="text" class="form-control" id="otp" name="otp" required>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Verify OTP</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
