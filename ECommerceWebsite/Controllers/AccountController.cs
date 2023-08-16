@@ -17,10 +17,13 @@ namespace ECommerceWebsite.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMailService _mailService;
-        public AccountController(IUnitOfWork unitOfWork, IMailService mailService)
+        private readonly ITokenService _tokenService;
+
+        public AccountController(IUnitOfWork unitOfWork, IMailService mailService, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _mailService = mailService;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -72,14 +75,42 @@ namespace ECommerceWebsite.Controllers
             {
                 MailRequest request1 = new MailRequest();
                 request1.ToEmail = request.ToEmail;
-                await _mailService.SendEmailAsync(request1);
-                return Ok(new { Message = "Email sent successfully." });
+               await _mailService.SendEmailAsync(request1);
+                return RedirectToAction("SendOpt", new { email = request.ToEmail});
+                //return Ok(new { Message = "Email sent successfully." });
             }
             catch (Exception ex)
             {
 
                 return StatusCode(500, new { Message = "An error occurred while sending the email.", Error = ex.Message });
             }
+        }
+
+        public ActionResult SendOpt(string email)
+        {
+            TempData["Email"] = email;
+            return View();
+        }
+        public async Task<ActionResult> VerifyOtp(string otp,string email)
+        {
+             TempData["Email"] =email;
+            var result = await _unitOfWork.UserRepository.GetUserNameForOtpVerification(otp,email);
+            if(result.StatusCode ==StatusCodes.Status200OK)
+            {
+
+                return View();
+            }
+            else
+            {
+                TempData["message"]=result.Message;
+                return RedirectToAction("SendOpt");
+            }
+        }
+        [HttpPost]
+        public ActionResult UpdatePasssword(string email,string password)
+        {
+            
+            return RedirectToAction("Login");
         }
     }
 }

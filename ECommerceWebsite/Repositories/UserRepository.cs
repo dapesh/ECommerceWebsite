@@ -2,10 +2,8 @@
 using ECommerceWebsite.DTOs;
 using ECommerceWebsite.Models;
 using ECommerceWebsite.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -17,8 +15,8 @@ namespace ECommerceWebsite.Repositories
         private readonly ITokenService _tokenService;
         public UserRepository(DataContext db, ITokenService tokenService)
         {
-            _db=db;
-            _tokenService=tokenService;
+            _db = db;
+            _tokenService = tokenService;
         }
 
         public Task AddUser(AppUser user)
@@ -30,8 +28,8 @@ namespace ECommerceWebsite.Repositories
 
         public async Task<Common> RegisterUser(RegisterDTO model)
         {
-           var isphonenumexits= await PhoneNumberExists(model.PhoneNumber);
-            if(isphonenumexits)
+            var isphonenumexits = await PhoneNumberExists(model.PhoneNumber);
+            if (isphonenumexits)
             {
                 return new Common()
                 {
@@ -50,8 +48,8 @@ namespace ECommerceWebsite.Repositories
                 Username = model.UserName
             };
             await _db.Users.AddAsync(user);
-            var issave=await  _db.SaveChangesAsync();
-            if(issave > 0)
+            var issave = await _db.SaveChangesAsync();
+            if (issave > 0)
             {
                 return new Common()
                 {
@@ -73,8 +71,8 @@ namespace ECommerceWebsite.Repositories
 
         public Task<bool> PhoneNumberExists(string phonenumber)
         {
-            var result =  _db.Users.AnyAsync(user => user.PhoneNumber == phonenumber);
-            return result;             
+            var result = _db.Users.AnyAsync(user => user.PhoneNumber == phonenumber);
+            return result;
         }
 
         public async Task<Common> LoginUser(LoginDTO model)
@@ -85,8 +83,8 @@ namespace ECommerceWebsite.Repositories
                 return new Common()
                 {
                     Message = "Invalid Phone Number",
-                    Type="Error",
-                    StatusCode=StatusCodes.Status302Found
+                    Type = "Error",
+                    StatusCode = StatusCodes.Status302Found
                 };
             }
             using var hmac = new HMACSHA512(result.PasswordSalt);
@@ -99,7 +97,7 @@ namespace ECommerceWebsite.Repositories
                     {
                         Message = "Incorrect Password",
                         Type = "Error",
-                        StatusCode= StatusCodes.Status404NotFound
+                        StatusCode = StatusCodes.Status404NotFound
                     };
                 }
             }
@@ -128,5 +126,33 @@ namespace ECommerceWebsite.Repositories
             return result;
         }
 
+        public async Task<Common> GetUserNameForOtpVerification(string otp, string email)
+        {
+            var result = await _db.Users.FirstOrDefaultAsync(a => a.Email == email);
+            var username = result.Username;
+            var OTP = await _db.OtpManger.FirstOrDefaultAsync(x => x.Otp == otp && username == x.UserName && x.isVerified == "n");
+
+            if(otp!=null)
+            {
+                if (OTP.CreateDate.AddMinutes(10) > DateTime.UtcNow)
+                {
+                    return new Common()
+                    {
+                        Message = "OTP Verified Successfully",
+                        Type = "success",
+                        StatusCode = StatusCodes.Status200OK
+                    };
+                }
+            }
+
+            
+
+            return new Common()
+            {
+                Message = "Invalid OTP or Email",
+                Type = "error",
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+        }
     }
 }

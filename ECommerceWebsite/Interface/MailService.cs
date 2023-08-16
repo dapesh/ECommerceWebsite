@@ -31,7 +31,7 @@ namespace ECommerceWebsite.Interface
                     _db.SaveChanges();
                 }
             }
-            Random num = new Random(10);
+            Random num = new Random(5);
             var data= num.Next();
             OtpHandler opt = new OtpHandler();
             opt.UserName=user.Username;

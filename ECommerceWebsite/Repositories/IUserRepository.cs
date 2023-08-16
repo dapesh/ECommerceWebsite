@@ -12,6 +12,7 @@ namespace ECommerceWebsite.Repositories
         Task AddUser(AppUser user);
         ActionResult<AppUser> GetUserByPhoneNumberAsync(string phoneNumber);
         ActionResult<AppUser> GetUserByEmailAsync(string email);
+        Task<Common> GetUserNameForOtpVerification(string otp, string email);
 
     }
 }
