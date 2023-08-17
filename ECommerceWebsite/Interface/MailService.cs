@@ -1,9 +1,9 @@
-﻿using ECommerceWebsite.Models;
+﻿using ECommerceWebsite.Data;
+using ECommerceWebsite.Models;
+using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MailKit.Net.Smtp;
-using ECommerceWebsite.Data;
 
 namespace ECommerceWebsite.Interface
 {
@@ -11,28 +11,28 @@ namespace ECommerceWebsite.Interface
     {
         private readonly MailSettings _mailSettings;
         private readonly DataContext _db;
-        public MailService(IOptions<MailSettings> mailSettings,DataContext db)
+        public MailService(IOptions<MailSettings> mailSettings, DataContext db)
         {
             _mailSettings = mailSettings.Value;
-            _db=db;
+            _db = db;
         }
         public async Task<Common> SendEmailAsync(MailRequest mailRequest)
         {
-            var user = _db.Users.FirstOrDefault(x=>x.Email==mailRequest.ToEmail);
-            
-            if(user == null)
+            var user = _db.Users.FirstOrDefault(x => x.Email == mailRequest.ToEmail);
+
+            if (user == null)
             {
                 return new Common()
                 {
                     Message = "Invalid Email",
-                    Type="error",
-                    StatusCode=StatusCodes.Status404NotFound
+                    Type = "error",
+                    StatusCode = StatusCodes.Status404NotFound
                 };
             }
             else
             {
                 var optdetail = _db.OtpManger.Where(x => x.UserName == user.Username && x.isVerified != "y");
-                if(optdetail== null)
+                if (optdetail == null)
                 {
                     return new Common()
                     {
@@ -50,8 +50,8 @@ namespace ECommerceWebsite.Interface
                         _db.SaveChanges();
                     }
                 }
-                Random num = new Random(5);
-                var data = num.Next();
+                Random num = new Random();
+                var data = num.Next(100000);
                 OtpHandler opt = new OtpHandler();
                 opt.UserName = user.Username;
                 opt.isVerified = "p";
@@ -60,8 +60,9 @@ namespace ECommerceWebsite.Interface
                 _db.OtpManger.Add(opt);
                 _db.SaveChanges();
                 mailRequest.Subject = "Forget Password";
-                mailRequest.Body = @$"<h4>Dear {user.Username}</h4><br> <b>Your Otp is {data}</b><br> Regards, <br>{_mailSettings.DisplayName}<br>
-                                <h6>Your OTP will expire within 10 minutes. Any Support Contact HeadOffice</h6>";
+                mailRequest.Body = Function.Emailtemp(user.Username,data.ToString());
+                //mailRequest.Body = @$"<h4>Dear {user.Username}</h4><br> <b>Your Otp is {data}</b><br> Regards, <br>{_mailSettings.DisplayName}<br>
+                //                <h6>Your OTP will expire within 10 minutes. Any Support Contact HeadOffice</h6>";
                 var email = new MimeMessage();
                 email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
@@ -79,7 +80,7 @@ namespace ECommerceWebsite.Interface
                     Message = "OTP Sent Successfully",
                     Type = "success",
                     StatusCode = StatusCodes.Status200OK,
-                    Email=user.Email
+                    Email = user.Email
                 };
             }
 
