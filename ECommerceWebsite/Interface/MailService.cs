@@ -76,7 +76,7 @@ namespace ECommerceWebsite.Interface
                 smtp.Disconnect(true);
                 return new Common()
                 {
-                    Message = "Email Sent Successfully",
+                    Message = "OTP Sent Successfully",
                     Type = "success",
                     StatusCode = StatusCodes.Status200OK,
                     Email=user.Email
