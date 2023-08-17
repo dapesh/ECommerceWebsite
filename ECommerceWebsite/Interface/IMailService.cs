@@ -4,7 +4,7 @@ namespace ECommerceWebsite.Interface
 {
     public interface IMailService
     {
-        Task SendEmailAsync(MailRequest mailRequest);
+        Task<Common> SendEmailAsync(MailRequest mailRequest);
 
     }
 }
