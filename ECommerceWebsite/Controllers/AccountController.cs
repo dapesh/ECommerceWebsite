@@ -6,6 +6,7 @@ using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -75,8 +76,20 @@ namespace ECommerceWebsite.Controllers
             {
                 MailRequest request1 = new MailRequest();
                 request1.ToEmail = request.ToEmail;
-               await _mailService.SendEmailAsync(request1);
-                return RedirectToAction("SendOpt", new { email = request.ToEmail});
+               var res = await _mailService.SendEmailAsync(request1);
+                TempData["Message"] = res.Message;
+                TempData["Type"] = res.Type;
+                TempData["Email"] = res.Email;
+
+                if (res.StatusCode==StatusCodes.Status404NotFound)
+                {
+                    return RedirectToAction("ForgotPassword", "Account");
+                }               
+                return RedirectToAction("SendOpt", new { 
+                    Email = TempData["Email"],
+                    Message = TempData["Message"],
+                    Type= TempData["Type"]
+                });
                 //return Ok(new { Message = "Email sent successfully." });
             }
             catch (Exception ex)
@@ -86,18 +99,19 @@ namespace ECommerceWebsite.Controllers
             }
         }
 
-        public ActionResult SendOpt(string email)
+        public ActionResult SendOpt(string email,string message, string type)
         {
             TempData["Email"] = email;
+            TempData["Message"] = message;
+            TempData["Type"] = type;
             return View();
         }
         public async Task<ActionResult> VerifyOtp(string otp,string email)
         {
              TempData["Email"] =email;
             var result = await _unitOfWork.UserRepository.GetUserNameForOtpVerification(otp,email);
-            if(result.StatusCode ==StatusCodes.Status200OK)
+            if(result.StatusCode == StatusCodes.Status200OK)
             {
-
                 return View();
             }
             else
@@ -109,8 +123,22 @@ namespace ECommerceWebsite.Controllers
         [HttpPost]
         public ActionResult UpdatePasssword(string email,string password)
         {
-            
-            return RedirectToAction("Login");
+            var result = _unitOfWork.UserRepository.GetUserByEmailAsync(email);
+            if (result != null)
+            {
+                if(result.Value.Email == email)
+                {
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    return RedirectToAction("VerifyOtp", "Account");
+                }
+            }
+            else
+            {
+                return RedirectToAction("VerifyOtp", "Account");
+            }
         }
     }
 }

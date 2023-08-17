@@ -130,7 +130,7 @@ namespace ECommerceWebsite.Repositories
         {
             var result = await _db.Users.FirstOrDefaultAsync(a => a.Email == email);
             var username = result.Username;
-            var OTP = await _db.OtpManger.FirstOrDefaultAsync(x => x.Otp == otp && username == x.UserName && x.isVerified == "n");
+            var OTP = await _db.OtpManger.FirstOrDefaultAsync(x => x.Otp == otp && username == x.UserName && x.isVerified == "p");
 
             if(otp!=null)
             {
@@ -144,9 +144,6 @@ namespace ECommerceWebsite.Repositories
                     };
                 }
             }
-
-            
-
             return new Common()
             {
                 Message = "Invalid OTP or Email",
