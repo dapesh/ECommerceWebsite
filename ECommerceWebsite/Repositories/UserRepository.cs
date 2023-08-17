@@ -132,7 +132,7 @@ namespace ECommerceWebsite.Repositories
             var username = result.Username;
             var OTP = await _db.OtpManger.FirstOrDefaultAsync(x => x.Otp == otp && username == x.UserName && x.isVerified == "p");
 
-            if(otp!=null)
+            if(OTP!=null)
             {
                 if (OTP.CreateDate.AddMinutes(10) > DateTime.UtcNow)
                 {
@@ -150,6 +150,60 @@ namespace ECommerceWebsite.Repositories
                 Type = "error",
                 StatusCode = StatusCodes.Status400BadRequest
             };
+        }
+
+        public async Task<Common> ChangePassword(string Email, string password)
+        {
+            try
+            {
+                var result = await _db.Users.FirstOrDefaultAsync(x => x.Email == Email);
+                if (result == null)
+                {
+                    return new Common()
+                    {
+                        Message = "Invalid Email Address",
+                        Type = "error",
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+                using var hmac = new HMACSHA512();
+                var passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var passwordSalt = hmac.Key;
+                var email = Email;
+                result.PasswordHash = passwordHash;
+                result.PasswordSalt = passwordSalt;
+                var issave = await _db.SaveChangesAsync();
+
+                if (issave > 0)
+                {
+                    return new Common()
+                    {
+                        Message = "Password Changed Successfully",
+                        Type = "Success",
+                        StatusCode = StatusCodes.Status200OK
+                    };
+                }
+                else
+                {
+                    return new Common()
+                    {
+                        Message = "Password Change Failed",
+                        Type = "Error",
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return new Common()
+                {
+                    Message = "An error occurred while changing the password.",
+                    Type = "Error",
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+           
         }
     }
 }

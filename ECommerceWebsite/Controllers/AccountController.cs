@@ -3,14 +3,7 @@ using ECommerceWebsite.Interface;
 using ECommerceWebsite.Models;
 using ECommerceWebsite.Repositories;
 using ECommerceWebsite.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace ECommerceWebsite.Controllers
 {
@@ -55,10 +48,10 @@ namespace ECommerceWebsite.Controllers
         public async Task<ActionResult> Login(LoginDTO loginDTO)
         {
             var user = await _unitOfWork.UserRepository.LoginUser(loginDTO);
-           
+
             TempData["Message"] = user.Message;
             TempData["Type"] = user.Type;
-            if(user.StatusCode==StatusCodes.Status200OK)
+            if (user.StatusCode == StatusCodes.Status200OK)
                 return RedirectToAction("Index", "Home");
             else
                 return RedirectToAction("Login", "Account");
@@ -67,7 +60,7 @@ namespace ECommerceWebsite.Controllers
         {
             return View();
         }
-       
+
 
         [HttpPost]
         public async Task<IActionResult> Send([FromForm] MailRequest request)
@@ -76,19 +69,20 @@ namespace ECommerceWebsite.Controllers
             {
                 MailRequest request1 = new MailRequest();
                 request1.ToEmail = request.ToEmail;
-               var res = await _mailService.SendEmailAsync(request1);
+                var res = await _mailService.SendEmailAsync(request1);
                 TempData["Message"] = res.Message;
                 TempData["Type"] = res.Type;
                 TempData["Email"] = res.Email;
 
-                if (res.StatusCode==StatusCodes.Status404NotFound)
+                if (res.StatusCode == StatusCodes.Status404NotFound)
                 {
                     return RedirectToAction("ForgotPassword", "Account");
-                }               
-                return RedirectToAction("SendOpt", new { 
+                }
+                return RedirectToAction("SendOpt", new
+                {
                     Email = TempData["Email"],
                     Message = TempData["Message"],
-                    Type= TempData["Type"]
+                    Type = TempData["Type"]
                 });
                 //return Ok(new { Message = "Email sent successfully." });
             }
@@ -99,37 +93,44 @@ namespace ECommerceWebsite.Controllers
             }
         }
 
-        public ActionResult SendOpt(string email,string message, string type)
+        public ActionResult SendOpt(string email, string message, string type)
         {
-            TempData["Email"] = email;
-            TempData["Message"] = message;
-            TempData["Type"] = type;
+            var Email =TempData["Email"];
+            var Message =TempData["Message"];
+            var Type = TempData["Type"];
             return View();
         }
-        public async Task<ActionResult> VerifyOtp(string otp,string email)
+        public async Task<ActionResult> VerifyOtp(string otp, string email)
         {
-             TempData["Email"] =email;
-            var result = await _unitOfWork.UserRepository.GetUserNameForOtpVerification(otp,email);
-            if(result.StatusCode == StatusCodes.Status200OK)
+            TempData["Email"] = email;
+            var result = await _unitOfWork.UserRepository.GetUserNameForOtpVerification(otp, email);
+            if (result.StatusCode == StatusCodes.Status200OK)
             {
                 return View();
             }
             else
             {
-                TempData["message"]=result.Message;
+                TempData["message"] = result.Message;
+                TempData["Type"]= result.Type;
                 return RedirectToAction("SendOpt");
             }
         }
         [HttpPost]
-        public ActionResult UpdatePasssword(string email,string password)
+        public async Task<ActionResult> UpdatePasssword(string email, string password, string confirmPassword)
         {
-            var result = _unitOfWork.UserRepository.GetUserByEmailAsync(email);
-            if (result != null)
-            {
-               
-                    return RedirectToAction("Login");
 
+            var output = await _unitOfWork.UserRepository.ChangePassword(email, password);
+
+            if (output.StatusCode == StatusCodes.Status200OK)
+            {
+                TempData["Message"] = output.Message;
+                TempData["Status"] = output.StatusCode;
+                TempData["Type"]=output.Type;
+                return RedirectToAction("Login");
             }
+
+
+
             else
             {
                 return RedirectToAction("VerifyOtp", "Account");
