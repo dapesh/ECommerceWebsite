@@ -126,14 +126,9 @@ namespace ECommerceWebsite.Controllers
             var result = _unitOfWork.UserRepository.GetUserByEmailAsync(email);
             if (result != null)
             {
-                if(result.Value.Email == email)
-                {
+               
                     return RedirectToAction("Login");
-                }
-                else
-                {
-                    return RedirectToAction("VerifyOtp", "Account");
-                }
+
             }
             else
             {
