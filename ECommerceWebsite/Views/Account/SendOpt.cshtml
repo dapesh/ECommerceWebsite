@@ -1,6 +1,13 @@
 ﻿@{
     Layout = null;
 }
+<style>
+    h1 {
+        margin: 0 0 20px 0;
+        font-weight: 300;
+        font-size: 28px;
+    }
+</style>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -30,7 +37,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../../dist/js/demo.js"></script>
 
-@using (Html.BeginForm("VerifyOtp", "Account", FormMethod.Get, new { @class = "needs-validation", novalidate = "novalidate" }))
+@*@using (Html.BeginForm("VerifyOtp", "Account", FormMethod.Get, new { @class = "needs-validation", novalidate = "novalidate" }))
 {
     <section class="content">
         <div class="container-fluid">
@@ -42,7 +49,6 @@
                         </div>
                         <div class="card-body">
                             <input type="hidden" value="@TempData["Email"]" name="email">
-                            @* Add your conditional alert message here if needed *@
                             <div class="form-group">
                                 <label for="otp">Enter OTP:</label>
                                 <input type="text" class="form-control" id="otp" name="otp" required>
@@ -55,7 +61,40 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>*@
+
+@using (Html.BeginForm("VerifyOtp", "Account", FormMethod.Get, new { @class = "needs-validation", novalidate = "novalidate" }))
+{
+    <body style="background-color:#1111">
+        <div class="d-flex justify-content-center align-items-center" style="margin-top:180px">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="card">
+                        <div class="card-body login-card-body">
+                            <div class="card-header">
+                                <h3 class="card-title">OTP Verification</h3>
+                            </div>
+                                <input type="hidden" name="email" value="@TempData["Email"]">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Enter the OTP" id="otp" name="otp" required>
+                                    @*<div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="password-toggle fas fa-eye-slash" toggle="password" name="password" onclick="togglePasswordVisibility('password')"></span>
+                                        </div>
+                                    </div>*@
+                                </div>
+
+                                <div>
+                                    <button type="submit" class="btn btn-primary">Verify OTP</button>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+    }
 }
 
 

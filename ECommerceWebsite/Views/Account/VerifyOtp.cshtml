@@ -1,7 +1,13 @@
 ﻿@{
     Layout = null;
 }
-
+<style>
+    h1 {
+        margin: 0 0 20px 0;
+        font-weight: 300;
+        font-size: 28px;
+    }
+</style>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- jQuery Validation -->
@@ -33,39 +39,52 @@
 
 @using (Html.BeginForm("UpdatePasssword", "Account", FormMethod.Post, new { @class = "needs-validation",@id="onchange", novalidate = "novalidate" }))
 {
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h3 class="card-title">Reset Password</h3>
-                        </div>
-                        <div class="card-body">
-                            <input type="hidden" name="email" value="@TempData["Email"]">
-                            @* Add your conditional alert message here if needed *@
-                            <div class="form-group">
-                                <label for="otp">Enter Password:</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
+    <body style="background-color:#1111">
+        <div class ="d-flex justify-content-center align-items-center" style="margin-top:180px">
+            <div class="container">
+                <div class="row justify-content-center">
+                        <div class="card">
+                        <div class="card-body login-card-body">
+                            <h1 class="login-box-msg">Enter New Password Here</h1>
+
+                                <form action="#" method="post">
+                                    <input type="hidden" name="email" value="@TempData["Email"]">
+                                <div class="input-group mb-3">
+                                    <input type="password" class="form-control" placeholder="Enter a new Password" id="password" name="password" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="password-toggle fas fa-eye-slash" toggle="password" name="password" onclick="togglePasswordVisibility('password')"></span>
+                                        </div>
+                                    </div>
+                                    </div>
+                                
+
+                                <div class="input-group mb-3">
+                                    <input type="password" class="form-control" placeholder="Confirm new Password" id="confirmpassword" name="confirmpassword" required>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="password-toggle fas fa-eye-slash" id="confirmpassword" name="confirmpassword" toggle="password" onclick="togglePasswordVisibility('confirmpassword')"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                    <div>
+                                        <button type="submit" class="btn btn-primary">Reset Password</button>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="form-group">
-                                <label for="otp">Confirm Password:</label>
-                                <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required>
-                            </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Reset Password</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
-    </section>
+
+    </body>
 }
 
 <script>
 
     $("#onchange").on("submit",function(){
+        debugger
         let password = $("#password").val();
         let confirmpassword = $("#confirmpassword").val();
         if (password == confirmpassword) {
@@ -74,6 +93,22 @@
         else { 
         alert("password doesnot match")}
     })
+
+    function togglePasswordVisibility(inputId) {
+        debugger;
+        var input = document.getElementById(inputId);
+        var icon = document.querySelector(`[toggle="${inputId}"]`);
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        }
+    }
 
 </script>
 
