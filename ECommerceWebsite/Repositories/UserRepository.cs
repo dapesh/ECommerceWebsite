@@ -29,6 +29,28 @@ namespace ECommerceWebsite.Repositories
         public async Task<Common> RegisterUser(RegisterDTO model)
         {
             var isphonenumexits = await PhoneNumberExists(model.PhoneNumber);
+            var userexists = await _db.Users.FirstOrDefaultAsync(x => x.Username == model.UserName);
+            var useremailexists = await _db.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+
+            if(userexists != null) 
+            {
+                return new Common()
+                {
+                    Message = "User Name already Exits",
+                    Type = "Error",
+                    StatusCode = StatusCodes.Status302Found
+                };
+            }
+
+            if(useremailexists != null)
+            {
+                return new Common()
+                {
+                    Message = "User Email already Exits",
+                    Type = "Error",
+                    StatusCode = StatusCodes.Status302Found
+                };
+            }
             if (isphonenumexits)
             {
                 return new Common()

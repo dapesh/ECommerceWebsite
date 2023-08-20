@@ -3,6 +3,7 @@ using ECommerceWebsite.Interface;
 using ECommerceWebsite.Models;
 using ECommerceWebsite.Repositories;
 using ECommerceWebsite.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceWebsite.Controllers
@@ -35,6 +36,12 @@ namespace ECommerceWebsite.Controllers
             {
                 TempData["Message"] = common.Message;
                 TempData["Type"] = common.Type;
+            }
+            else if(common.StatusCode==StatusCodes.Status302Found)
+            {
+                TempData["Message"] = common.Message;
+                TempData["Type"] = common.Type;
+                return View();
             }
             return RedirectToAction("Login", "Account");
 
@@ -135,6 +142,13 @@ namespace ECommerceWebsite.Controllers
             {
                 return RedirectToAction("VerifyOtp", "Account");
             }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Logout()
+        {
+            Response.Cookies.Delete("token");
+            return RedirectToAction("Login", "Account");
         }
     }
 }
