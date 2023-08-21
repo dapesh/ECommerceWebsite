@@ -8,6 +8,7 @@ namespace ECommerceWebsite.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
+        public DbSet<ExcelDataModel> ExcelUpload {  get; set; }
         public DbSet<AppUser> Users { get; set; }
         public DbSet<OtpHandler> OtpManger { get; set; }
 
