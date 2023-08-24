@@ -55,8 +55,11 @@ namespace ECommerceWebsite.Migrations
 
             modelBuilder.Entity("ECommerceWebsite.Models.ExcelDataModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Column1")
                         .HasColumnType("nvarchar(max)");
@@ -68,6 +71,9 @@ namespace ECommerceWebsite.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Column4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Column5")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

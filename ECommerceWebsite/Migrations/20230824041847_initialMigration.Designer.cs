@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceWebsite.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230816032942_otpmigration")]
-    partial class otpmigration
+    [Migration("20230824041847_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,34 @@ namespace ECommerceWebsite.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ECommerceWebsite.Models.ExcelDataModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Column1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Column2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Column3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Column4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Column5")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExcelUpload");
                 });
 
             modelBuilder.Entity("ECommerceWebsite.Models.OtpHandler", b =>

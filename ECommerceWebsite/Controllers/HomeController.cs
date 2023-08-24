@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NuGet.Protocol.Core.Types;
 using OfficeOpenXml;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -23,12 +24,14 @@ namespace ECommerceWebsite.Controllers
         private readonly ITokenService _tokenService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly DataContext _db;
-        public HomeController(ILogger<HomeController> logger, ITokenService tokenService, IUnitOfWork unitOfWork, DataContext db)
+        private readonly IRepository _repository;
+        public HomeController(ILogger<HomeController> logger, ITokenService tokenService, IUnitOfWork unitOfWork, DataContext db, IRepository repository)
         {
             _logger = logger;
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
             _db = db;
+            _repository = repository;
         }
         [Authorize]
         public IActionResult Index()
@@ -55,73 +58,34 @@ namespace ECommerceWebsite.Controllers
         {
             return View();
         }
-        //[HttpPost]
-        //public IActionResult DocumentUpload(IFormFile postedFile)
-        //{
-        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-        //    if (postedFile != null && postedFile.Length>0)
-        //    {
-        //        using (var package = new ExcelPackage(postedFile.OpenReadStream()))
-        //        {
-        //            var worksheet = package.Workbook.Worksheets[0];
-        //            var excelData = new List<ExcelDataModel>();
-
-        //            for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-        //            {
-        //                excelData.Add(new ExcelDataModel
-        //                {
-        //                    Column1 = worksheet.Cells[row, 1].Value.ToString(),
-        //                    Column2 = worksheet.Cells[row, 2].Value.ToString(),
-        //                });
-        //            }
-
-        //            return View("DisplayData", excelData);
-        //        }
-        //    }
-        //    return View("Upload");
-        //}
-        [HttpPost]
-        public IActionResult DocumentUpload(IFormFile file, [FromServices] IWebHostEnvironment hostingEnvironment)
+        public IActionResult DocumentUpload(IFormFile file)
         {
-            string fileName = $"{hostingEnvironment.WebRootPath}\\files\\{file.FileName}";
-            using (FileStream fileStream= System.IO.File.Create(fileName))
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            if (file != null && file.Length > 0)
             {
-                file.CopyTo(fileStream);
-                fileStream.Flush();
-
-            }
-            var datatiinsert = this.getDataFromExcel(file.FileName);
-
-            _db.ExcelUpload.AddRange(datatiinsert);
-            _db.SaveChanges();
-
-            return RedirectToAction("DocumentUpload","Home");
-        }
-        private List<ExcelDataModel>  getDataFromExcel(string fname)
-        {
-            List<ExcelDataModel> dataToAdd = new List<ExcelDataModel>();
-            var fileName = $"{Directory.GetCurrentDirectory()}{@"\wwwroot\files"}" + "\\" + fname;
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-            using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read))
-            {
-                using(var reader = ExcelReaderFactory.CreateReader(stream))
+                using (var package = new ExcelPackage(file.OpenReadStream()))
                 {
-                    while(reader.Read())
+                    var worksheet = package.Workbook.Worksheets[0];
+                    var excelData = new List<ExcelDataModel>();
+
+                    for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
                     {
-                        var newdata = new ExcelDataModel()
+                        excelData.Add(new ExcelDataModel
                         {
-                            Id=Guid.NewGuid().ToString(),
-                            Column1=reader.GetValue(0)?.ToString(),
-                            Column2=reader.GetValue(1)?.ToString(),
-                            Column3 =reader.GetValue(2)?.ToString(),
-                            Column4 =reader.GetValue(3)?.ToString(),
-                        };
-                        dataToAdd.Add(newdata);
+                            Column1 = worksheet.Cells[row, 1].Value?.ToString(),
+                            Column2 = worksheet.Cells[row, 2].Value?.ToString(),
+                            Column3 = worksheet.Cells[row, 3].Value?.ToString(),
+                            Column4 = worksheet.Cells[row, 4].Value?.ToString(),
+                            Column5 = worksheet.Cells[row, 5].Value?.ToString(),
+
+                        });
                     }
+                    _repository.insertExcelFileSP(excelData);
+                    return RedirectToAction("DocumentUpload", "Home");
                 }
             }
-            return dataToAdd;
+            return RedirectToAction("DocumentUpload", "Home");
         }
 
     }
