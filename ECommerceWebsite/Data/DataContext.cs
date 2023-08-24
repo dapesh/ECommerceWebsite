@@ -14,6 +14,10 @@ namespace ECommerceWebsite.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ExcelDataModel>()
+                .HasKey(e => e.Id);
             modelBuilder.Entity<OtpHandler>().Property(x=>x.Otp).HasMaxLength(50);
             modelBuilder.Entity<OtpHandler>().Property(x=>x.isVerified).HasMaxLength(1);
             modelBuilder.Entity<OtpHandler>().HasKey(x => x.Id);

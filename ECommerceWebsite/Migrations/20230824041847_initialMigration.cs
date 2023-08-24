@@ -6,11 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ECommerceWebsite.Migrations
 {
     /// <inheritdoc />
-    public partial class otpmigration : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ExcelUpload",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Column1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Column2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Column3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Column4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Column5 = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExcelUpload", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "OtpManger",
                 columns: table => new
@@ -48,6 +65,9 @@ namespace ECommerceWebsite.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ExcelUpload");
+
             migrationBuilder.DropTable(
                 name: "OtpManger");
 

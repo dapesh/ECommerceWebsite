@@ -23,6 +23,10 @@ namespace ECommerceWebsite
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.IdleTimeout = TimeSpan.FromMinutes(20);
             });
+
+            string connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            services.AddScoped<IRepository>(provider => new Repository(connectionString));
             // Add services to the container.
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
