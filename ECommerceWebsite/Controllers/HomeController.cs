@@ -58,6 +58,7 @@ namespace ECommerceWebsite.Controllers
         {
             return View();
         }
+        [HttpPost]
         public IActionResult DocumentUpload(IFormFile file)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -71,17 +72,29 @@ namespace ECommerceWebsite.Controllers
 
                     for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
                     {
+                        var rowValues = new List<string>();
+                        for(var col = 1; col <= 5; col++)
+                        {
+                            var cellValue = worksheet.Cells[row, col].Value?.ToString()?.Trim();
+                            rowValues.Add(cellValue);
+                        }
+                        if (rowValues.All(string.IsNullOrWhiteSpace))
+                        {
+                            break;
+                        }
                         excelData.Add(new ExcelDataModel
                         {
-                            Column1 = worksheet.Cells[row, 1].Value?.ToString(),
-                            Column2 = worksheet.Cells[row, 2].Value?.ToString(),
-                            Column3 = worksheet.Cells[row, 3].Value?.ToString(),
-                            Column4 = worksheet.Cells[row, 4].Value?.ToString(),
-                            Column5 = worksheet.Cells[row, 5].Value?.ToString(),
-
+                            Column1 = rowValues[0],
+                            Column2 = rowValues[1],
+                            Column3 = rowValues[2],
+                            Column4 = rowValues[3],
+                            Column5 = rowValues[4],
                         });
                     }
-                    _repository.insertExcelFileSP(excelData);
+                    if (excelData.Count > 0)
+                    {
+                        _repository.insertExcelFileSP(excelData);
+                    }
                     return RedirectToAction("DocumentUpload", "Home");
                 }
             }

@@ -80,7 +80,6 @@ namespace ECommerceWebsite.Repositories
             }
             catch (Exception ex)
             {
-                // Handle the exception appropriately (log, rethrow, etc.)
                 return false;
             }
         }
