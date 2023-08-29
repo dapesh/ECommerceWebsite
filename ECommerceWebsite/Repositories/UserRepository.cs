@@ -31,7 +31,13 @@ namespace ECommerceWebsite.Repositories
             var isphonenumexits = await PhoneNumberExists(model.PhoneNumber);
             var userexists = await _db.Users.FirstOrDefaultAsync(x => x.Username == model.UserName);
             var useremailexists = await _db.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
-
+            var username = model.UserName;
+            if(username != null)
+            {
+                var roleManager = new RoleManager { Name = "User" };
+                await _db.RoleManagers.AddAsync(roleManager);
+                await _db.SaveChangesAsync();
+            }
             if(userexists != null) 
             {
                 return new Common()
@@ -100,6 +106,21 @@ namespace ECommerceWebsite.Repositories
         public async Task<Common> LoginUser(LoginDTO model)
         {
             var result = await _db.Users.SingleOrDefaultAsync(x => x.PhoneNumber == model.PhoneNumber);
+            var userName = result.Username;
+            var roleDetails =  _db.RoleManagers.FirstOrDefault(x => x.Name == userName);
+            if (roleDetails != null)
+            {
+                var role = roleDetails.Name;
+                if (role == "User")
+                {
+                    return new Common()
+                    {
+                        Message = "You are Unauthorized to Login",
+                        Type="Error",
+                        StatusCode= StatusCodes.Status302Found
+                    };
+                }
+            }
             if (result == null)
             {
                 return new Common()
