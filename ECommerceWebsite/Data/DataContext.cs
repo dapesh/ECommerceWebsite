@@ -11,10 +11,25 @@ namespace ECommerceWebsite.Data
         public DbSet<ExcelDataModel> ExcelUpload {  get; set; }
         public DbSet<AppUser> Users { get; set; }
         public DbSet<OtpHandler> OtpManger { get; set; }
+        public DbSet<RoleManager> RoleManagers { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserRole>()
+            .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
 
             modelBuilder.Entity<ExcelDataModel>()
                 .HasKey(e => e.Id);
