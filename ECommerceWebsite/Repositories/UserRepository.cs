@@ -31,10 +31,11 @@ namespace ECommerceWebsite.Repositories
             var isphonenumexits = await PhoneNumberExists(model.PhoneNumber);
             var userexists = await _db.Users.FirstOrDefaultAsync(x => x.Username == model.UserName);
             var useremailexists = await _db.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+
             var username = model.UserName;
             if(username != null)
             {
-                var roleManager = new RoleManager { Name = "User" };
+                var roleManager = new RoleManager { Role = "User", Name= username };
                 await _db.RoleManagers.AddAsync(roleManager);
                 await _db.SaveChangesAsync();
             }
@@ -76,9 +77,21 @@ namespace ECommerceWebsite.Repositories
                 Username = model.UserName
             };
             await _db.Users.AddAsync(user);
+            
+
             var issave = await _db.SaveChangesAsync();
             if (issave > 0)
             {
+                var userForRoles = _db.Users.FirstOrDefault(x => x.PhoneNumber == model.PhoneNumber);
+                var roleForRoles = _db.RoleManagers.FirstOrDefault(x => x.Name == model.UserName);
+
+                var userRole = new UserRole
+                {
+                    UserId = userForRoles.Id,
+                    RoleId = roleForRoles.Id
+                };
+                _db.UserRoles.Add(userRole);
+                _db.SaveChanges();
                 return new Common()
                 {
                     Message = "Register Successfully",

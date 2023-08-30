@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceWebsite.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230828172828_roleMigration123")]
-    partial class roleMigration123
+    [Migration("20230830051418_roleMigration")]
+    partial class roleMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,6 +119,9 @@ namespace ECommerceWebsite.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
