@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ECommerceWebsite.Migrations
 {
     /// <inheritdoc />
-    public partial class roleMigration : Migration
+    public partial class updatedMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,20 @@ namespace ECommerceWebsite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoleManagers",
                 columns: table => new
                 {
@@ -76,6 +90,29 @@ namespace ECommerceWebsite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserRatings",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RatedUserID = table.Column<int>(type: "int", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RatedByUserID = table.Column<int>(type: "int", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRatings", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_UserRatings_Users_RatedByUserID",
+                        column: x => x.RatedByUserID,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
@@ -100,6 +137,11 @@ namespace ECommerceWebsite.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserRatings_RatedByUserID",
+                table: "UserRatings",
+                column: "RatedByUserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
@@ -113,6 +155,12 @@ namespace ECommerceWebsite.Migrations
 
             migrationBuilder.DropTable(
                 name: "OtpManger");
+
+            migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "UserRatings");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");

@@ -107,6 +107,25 @@ namespace ECommerceWebsite.Migrations
                     b.ToTable("OtpManger");
                 });
 
+            modelBuilder.Entity("ECommerceWebsite.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
+                });
+
             modelBuilder.Entity("ECommerceWebsite.Models.RoleManager", b =>
                 {
                     b.Property<int>("Id")
@@ -126,6 +145,36 @@ namespace ECommerceWebsite.Migrations
                     b.ToTable("RoleManagers");
                 });
 
+            modelBuilder.Entity("ECommerceWebsite.Models.UserRating", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RatedByUserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RatedUserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("RatedByUserID");
+
+                    b.ToTable("UserRatings");
+                });
+
             modelBuilder.Entity("ECommerceWebsite.Models.UserRole", b =>
                 {
                     b.Property<int>("UserId")
@@ -139,6 +188,17 @@ namespace ECommerceWebsite.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("ECommerceWebsite.Models.UserRating", b =>
+                {
+                    b.HasOne("ECommerceWebsite.Models.AppUser", "RatedByUser")
+                        .WithMany("RatingsGiven")
+                        .HasForeignKey("RatedByUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RatedByUser");
                 });
 
             modelBuilder.Entity("ECommerceWebsite.Models.UserRole", b =>
@@ -162,6 +222,8 @@ namespace ECommerceWebsite.Migrations
 
             modelBuilder.Entity("ECommerceWebsite.Models.AppUser", b =>
                 {
+                    b.Navigation("RatingsGiven");
+
                     b.Navigation("UserRoles");
                 });
 

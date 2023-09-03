@@ -12,6 +12,7 @@ namespace ECommerceWebsite.Models
         public byte[] PasswordSalt { get; set; }
         public string Email { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
+        public virtual ICollection<UserRating> RatingsGiven { get; set; }
         public ICollection<UserRole> UserRoles { get; set; }
 
     }

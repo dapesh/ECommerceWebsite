@@ -1,0 +1,7 @@
+﻿@model AppUser
+
+<form id="searchForm" method="post" action="@Url.Action("SearchUser")">
+    @Html.AntiForgeryToken()
+    <input type="text" name="userName" placeholder="Search..." />
+    <button type="submit">Search</button>
+</form>

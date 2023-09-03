@@ -35,9 +35,7 @@ namespace ECommerceWebsite.Repositories
             var username = model.UserName;
             if(username != null)
             {
-                var roleManager = new RoleManager { Role = "User", Name= username };
-                await _db.RoleManagers.AddAsync(roleManager);
-                await _db.SaveChangesAsync();
+                
             }
             if(userexists != null) 
             {
@@ -82,6 +80,10 @@ namespace ECommerceWebsite.Repositories
             var issave = await _db.SaveChangesAsync();
             if (issave > 0)
             {
+                var roleManager = new RoleManager { Role = "User", Name = username };
+                await _db.RoleManagers.AddAsync(roleManager);
+                await _db.SaveChangesAsync();
+
                 var userForRoles = _db.Users.FirstOrDefault(x => x.PhoneNumber == model.PhoneNumber);
                 var roleForRoles = _db.RoleManagers.FirstOrDefault(x => x.Name == model.UserName);
 
@@ -123,7 +125,7 @@ namespace ECommerceWebsite.Repositories
             var roleDetails =  _db.RoleManagers.FirstOrDefault(x => x.Name == userName);
             if (roleDetails != null)
             {
-                var role = roleDetails.Name;
+                var role = roleDetails.Role;
                 if (role == "User")
                 {
                     return new Common()

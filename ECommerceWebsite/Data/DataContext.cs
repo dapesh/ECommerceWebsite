@@ -13,10 +13,16 @@ namespace ECommerceWebsite.Data
         public DbSet<OtpHandler> OtpManger { get; set; }
         public DbSet<RoleManager> RoleManagers { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<UserRating> UserRatings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<AppUser>()
+            .HasMany(u => u.RatingsGiven)
+            .WithOne(r => r.RatedByUser)
+            .HasForeignKey(r => r.RatedByUserID)
+            .IsRequired();
 
             modelBuilder.Entity<UserRole>()
             .HasKey(ur => new { ur.UserId, ur.RoleId });
