@@ -13,6 +13,9 @@ namespace ECommerceWebsite.Controllers
         }
         public IActionResult Index()
         {
+            var claimValue = User.FindFirst("mobilephone")?.Value;
+            var result = _db.Users.FirstOrDefault(u=>u.PhoneNumber == claimValue);
+            ViewBag.RatedByUserId = result.Id;
             return View();
         }
         public IActionResult SearchUser()
@@ -35,6 +38,24 @@ namespace ECommerceWebsite.Controllers
         {
             var userProfile = _db.Users.FirstOrDefault(x=>x.Id==userIdwhomtoRate);
             return View(userProfile);
+        }
+
+        [HttpPost]
+        public IActionResult AddRating(int rating, string comment, int id)
+        {
+            var claimValue = User.FindFirst("mobilephone")?.Value;
+            var result = _db.Users.FirstOrDefault(u => u.PhoneNumber == claimValue);
+            var results = new UserRating()
+            {
+                RatedByUserID= result.Id,
+                Rating=rating,
+                Comment=comment,
+                Timestamp=DateTime.Now,
+                RatedUserID=id
+            };
+            _db.UserRatings.Add(results);
+            _db.SaveChanges();
+            return RedirectToAction("UserProfile", new { userIdwhomtoRate = results.RatedUserID });
         }
     }
 }
