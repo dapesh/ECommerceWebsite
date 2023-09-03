@@ -25,7 +25,6 @@ namespace ECommerceWebsite.Repositories
             return _db.SaveChangesAsync();
 
         }
-
         public async Task<Common> RegisterUser(RegisterDTO model)
         {
             var isphonenumexits = await PhoneNumberExists(model.PhoneNumber);
@@ -33,11 +32,8 @@ namespace ECommerceWebsite.Repositories
             var useremailexists = await _db.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
 
             var username = model.UserName;
-            if(username != null)
-            {
-                
-            }
-            if(userexists != null) 
+
+            if (userexists != null)
             {
                 return new Common()
                 {
@@ -47,7 +43,7 @@ namespace ECommerceWebsite.Repositories
                 };
             }
 
-            if(useremailexists != null)
+            if (useremailexists != null)
             {
                 return new Common()
                 {
@@ -75,23 +71,20 @@ namespace ECommerceWebsite.Repositories
                 Username = model.UserName
             };
             await _db.Users.AddAsync(user);
-            
+
 
             var issave = await _db.SaveChangesAsync();
             if (issave > 0)
             {
-                var roleManager = new RoleManager { Role = "User", Name = username };
-                await _db.RoleManagers.AddAsync(roleManager);
-                await _db.SaveChangesAsync();
-
                 var userForRoles = _db.Users.FirstOrDefault(x => x.PhoneNumber == model.PhoneNumber);
-                var roleForRoles = _db.RoleManagers.FirstOrDefault(x => x.Name == model.UserName);
+                var roleForRoles = _db.RoleManagers.FirstOrDefault(x => x.Role == "User");
 
                 var userRole = new UserRole
                 {
                     UserId = userForRoles.Id,
                     RoleId = roleForRoles.Id
                 };
+
                 _db.UserRoles.Add(userRole);
                 _db.SaveChanges();
                 return new Common()
@@ -122,20 +115,6 @@ namespace ECommerceWebsite.Repositories
         {
             var result = await _db.Users.SingleOrDefaultAsync(x => x.PhoneNumber == model.PhoneNumber);
             var userName = result.Username;
-            var roleDetails =  _db.RoleManagers.FirstOrDefault(x => x.Name == userName);
-            if (roleDetails != null)
-            {
-                var role = roleDetails.Role;
-                if (role == "User")
-                {
-                    return new Common()
-                    {
-                        Message = "You are Unauthorized to Login",
-                        Type="Error",
-                        StatusCode= StatusCodes.Status302Found
-                    };
-                }
-            }
             if (result == null)
             {
                 return new Common()

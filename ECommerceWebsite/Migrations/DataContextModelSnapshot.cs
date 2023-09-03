@@ -134,9 +134,6 @@ namespace ECommerceWebsite.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
