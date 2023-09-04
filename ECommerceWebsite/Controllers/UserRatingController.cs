@@ -12,6 +12,7 @@ namespace ECommerceWebsite.Controllers
             _db = db;
         }
         public IActionResult Index()
+        
         {
             var claimValue = User.FindFirst("mobilephone")?.Value;
             var result = _db.Users.FirstOrDefault(u=>u.PhoneNumber == claimValue);
@@ -34,28 +35,31 @@ namespace ECommerceWebsite.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult UserProfile(int userIdwhomtoRate) 
+        public IActionResult UserProfile(int userIdwhomtoRate, double AverageRating) 
         {
+            ViewBag.AverageRating = AverageRating;
             var userProfile = _db.Users.FirstOrDefault(x=>x.Id==userIdwhomtoRate);
             return View(userProfile);
         }
 
         [HttpPost]
-        public IActionResult AddRating(int rating, string comment, int id)
+        public IActionResult AddRating(string comment, int id, int SelectedRating)
         {
             var claimValue = User.FindFirst("mobilephone")?.Value;
             var result = _db.Users.FirstOrDefault(u => u.PhoneNumber == claimValue);
+            var ratings = _db.UserRatings.Where(r => r.RatedUserID == id);
+            double averageRating = ratings.Any() ? ratings.Average(r => r.Rating) : 0;
             var results = new UserRating()
             {
                 RatedByUserID= result.Id,
-                Rating=rating,
+                Rating= SelectedRating,
                 Comment=comment,
                 Timestamp=DateTime.Now,
                 RatedUserID=id
             };
             _db.UserRatings.Add(results);
             _db.SaveChanges();
-            return RedirectToAction("UserProfile", new { userIdwhomtoRate = results.RatedUserID });
+            return RedirectToAction("UserProfile", new { userIdwhomtoRate = results.RatedUserID, AverageRating= averageRating });
         }
     }
 }
