@@ -22,7 +22,11 @@ namespace ECommerceWebsite.Services
             var claims = new List<Claim>
             {
                 new Claim("mobilephone", user.PhoneNumber),
-                new Claim(ClaimTypes.NameIdentifier, user.Username)
+                new Claim("username", user.Username),
+                new Claim("mobilephone2", user.PhoneNumber),
+                new Claim("mobilephone3", user.PhoneNumber),
+                new Claim("mobilephone4", user.PhoneNumber),
+                //new Claim(ClaimTypes.NameIdentifier, user.Username)
             };
             var creds = new SigningCredentials(_Key, SecurityAlgorithms.HmacSha256Signature);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -45,7 +49,7 @@ namespace ECommerceWebsite.Services
             return encodedToken.ToString();
         }
 
-        public string GetMobilePhoneFromToken()
+        public string GetUserDetailsFromToken(string key)
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var authorizationHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
@@ -67,7 +71,7 @@ namespace ECommerceWebsite.Services
                     SecurityToken validatedToken;
                     var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
 
-                    var mobilePhoneClaim = claimsPrincipal.FindFirst("mobilephone");
+                    var mobilePhoneClaim = claimsPrincipal.FindFirst(key);
                     if (mobilePhoneClaim != null)
                     {
                         return mobilePhoneClaim.Value;

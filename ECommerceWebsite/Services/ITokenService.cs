@@ -5,6 +5,6 @@ namespace ECommerceWebsite.Services
     public interface ITokenService
     {
         string CreateToken(AppUser user);
-        string GetMobilePhoneFromToken();
+        string GetUserDetailsFromToken(string Key);
     }
 }
