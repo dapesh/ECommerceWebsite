@@ -36,8 +36,8 @@ namespace ECommerceWebsite.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var mobilephone = string.Empty;
-            var mobileNumber = _tokenService.GetMobilePhoneFromToken();
+            var mobilephone = "mobilephone";
+            var mobileNumber = _tokenService.GetUserDetailsFromToken(mobilephone);
             var result = _unitOfWork.UserRepository.GetUserByPhoneNumberAsync(mobileNumber);
             var userName = result.Value.Username;
             return View();
