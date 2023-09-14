@@ -1,4 +1,5 @@
-﻿using ECommerceWebsite.Data;
+﻿using CloudinaryDotNet;
+using ECommerceWebsite.Data;
 using ECommerceWebsite.Interface;
 using ECommerceWebsite.Models;
 using ECommerceWebsite.Repositories;
@@ -16,7 +17,12 @@ namespace ECommerceWebsite
     {
         public static IServiceCollection GetServices(this IServiceCollection services,IConfiguration configuration)
         {
-
+            var cloudinarySettings = configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
+            services.AddSingleton(new Cloudinary(new Account(
+            cloudinarySettings.CloudName,
+            cloudinarySettings.ApiKey,
+            cloudinarySettings.ApiSecret
+               )));
             services.AddHttpContextAccessor();
             services.AddSession(options => {
                 options.Cookie.HttpOnly = true;

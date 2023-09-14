@@ -14,6 +14,7 @@ namespace ECommerceWebsite.Repositories
         ActionResult<AppUser> GetUserByEmailAsync(string email);
         Task<Common> GetUserNameForOtpVerification(string otp, string email);
         Task<Common> ChangePassword(string email,string password);
+        Task<Common> UploadUserImage(IFormFile file);
 
     }
 }

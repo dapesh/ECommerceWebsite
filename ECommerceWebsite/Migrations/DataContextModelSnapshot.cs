@@ -45,6 +45,9 @@ namespace ECommerceWebsite.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProfilePicturePublicId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
@@ -142,6 +145,36 @@ namespace ECommerceWebsite.Migrations
                     b.ToTable("RoleManagers");
                 });
 
+            modelBuilder.Entity("ECommerceWebsite.Models.UserPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("UserPhoto");
+                });
+
             modelBuilder.Entity("ECommerceWebsite.Models.UserRating", b =>
                 {
                     b.Property<int>("ID")
@@ -187,6 +220,17 @@ namespace ECommerceWebsite.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("ECommerceWebsite.Models.UserPhoto", b =>
+                {
+                    b.HasOne("ECommerceWebsite.Models.AppUser", "User")
+                        .WithMany("UserPhotos")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ECommerceWebsite.Models.UserRating", b =>
                 {
                     b.HasOne("ECommerceWebsite.Models.AppUser", "RatedByUser")
@@ -220,6 +264,8 @@ namespace ECommerceWebsite.Migrations
             modelBuilder.Entity("ECommerceWebsite.Models.AppUser", b =>
                 {
                     b.Navigation("RatingsGiven");
+
+                    b.Navigation("UserPhotos");
 
                     b.Navigation("UserRoles");
                 });
