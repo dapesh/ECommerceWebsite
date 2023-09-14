@@ -4,6 +4,7 @@ using ECommerceWebsite.Models;
 using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -242,5 +243,62 @@ namespace ECommerceWebsite.Repositories
             }
            
         }
+
+        public async Task<Common> UploadUserImage(IFormFile file)
+        {
+            var userphonenumber = _tokenService.GetUserDetailsFromToken("mobilephone");
+            var userDetails = GetUserByPhoneNumberAsync(userphonenumber);
+            if(userDetails == null)
+            {
+                return new Common()
+                {
+                    Message = "Invalid Phone Number",
+                    Type = "Error",
+                    StatusCode = StatusCodes.Status302Found
+                };
+            }
+            var username = userDetails.Value.Username;
+            var userId = userDetails.Value.Id;
+            if (file != null && file.Length > 0)
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+                    var apiUrl = $"https://api.cloudinary.com/v1_1/digo594g6/image/upload?timestamp={timestamp}&upload_preset=sfbot1hn";
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        var formData = new MultipartFormDataContent();
+                        formData.Add(new StreamContent(stream), "file", file.FileName);
+
+                        var response = await httpClient.PostAsync(apiUrl, formData);
+                        var guid = Guid.NewGuid();
+                        string responseJson =await response.Content.ReadAsStringAsync();
+                        dynamic responseObject = JObject.Parse(responseJson);
+
+                        string imageUrl = responseObject.secure_url.ToString();
+                        string publicId = responseObject.public_id.ToString();
+
+                        UserPhoto photo = new UserPhoto
+                        {
+                            PhotoUrl = imageUrl,
+                            PublicId = publicId,
+                            AppUserId= userId,
+                            IsMain = true,                            
+                        };
+                            await _db.UserPhotos.AddAsync(photo); 
+                            await _db.SaveChangesAsync();
+                    }
+                }
+            }
+            return new Common()
+            {
+                Message = "Photo Uploaded Successfully",
+                Type = "Success",
+                StatusCode = StatusCodes.Status200OK
+            };
+        }
+
     }
 }

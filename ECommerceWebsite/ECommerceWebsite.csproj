@@ -65,6 +65,7 @@
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="5.1.1" />
     <PackageReference Include="CData.ExcelServices" Version="23.0.8565" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.22.0" />
     <PackageReference Include="Dapper" Version="2.0.151" />
     <PackageReference Include="EPPlus" Version="7.0.0-preview2" />
     <PackageReference Include="ExcelDataReader" Version="3.7.0-develop00385" />
