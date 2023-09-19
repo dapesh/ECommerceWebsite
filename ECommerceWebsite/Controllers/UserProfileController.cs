@@ -22,6 +22,8 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public IActionResult UserProfileDetails() 
         {
+            //var userimages = _unitOfWork.UserRepository.GetUsersProfilePicture("username");
+            
             AppUser user = new AppUser();
             var userphonenumber = _unitOfWork.TokenService.GetUserDetailsFromToken("mobilephone");
             var userDetails = _unitOfWork.UserRepository.GetUserByPhoneNumberAsync(userphonenumber);
@@ -37,8 +39,7 @@ namespace ECommerceWebsite.Controllers
         public IActionResult UploadImage(IFormFile file)
         {
             var result = _unitOfWork.UserRepository.UploadUserImage(file);
-
-            return View(result);
+            return RedirectToAction("UserProfileDetails", result);
         }
     }
 }

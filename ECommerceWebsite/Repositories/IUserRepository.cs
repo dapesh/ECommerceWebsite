@@ -16,5 +16,6 @@ namespace ECommerceWebsite.Repositories
         Task<Common> ChangePassword(string email,string password);
         Task<Common> UploadUserImage(IFormFile file);
 
+        List<UserPhoto>GetUsersProfilePicture(string Key);
     }
 }

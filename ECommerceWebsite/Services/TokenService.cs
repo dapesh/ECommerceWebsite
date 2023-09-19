@@ -26,6 +26,7 @@ namespace ECommerceWebsite.Services
                 new Claim("mobilephone2", user.PhoneNumber),
                 new Claim("mobilephone3", user.PhoneNumber),
                 new Claim("mobilephone4", user.PhoneNumber),
+                new Claim("userid", user.Id.ToString())
                 //new Claim(ClaimTypes.NameIdentifier, user.Username)
             };
             var creds = new SigningCredentials(_Key, SecurityAlgorithms.HmacSha256Signature);

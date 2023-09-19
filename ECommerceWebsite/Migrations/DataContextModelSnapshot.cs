@@ -172,7 +172,7 @@ namespace ECommerceWebsite.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("UserPhoto");
+                    b.ToTable("UserPhotos");
                 });
 
             modelBuilder.Entity("ECommerceWebsite.Models.UserRating", b =>

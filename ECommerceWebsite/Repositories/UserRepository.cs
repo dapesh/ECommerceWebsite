@@ -272,26 +272,44 @@ namespace ECommerceWebsite.Repositories
                         var formData = new MultipartFormDataContent();
                         formData.Add(new StreamContent(stream), "file", file.FileName);
 
-                        var response = await httpClient.PostAsync(apiUrl, formData);
-                        var guid = Guid.NewGuid();
-                        string responseJson =await response.Content.ReadAsStringAsync();
-                        dynamic responseObject = JObject.Parse(responseJson);
-
-                        string imageUrl = responseObject.secure_url.ToString();
-                        string publicId = responseObject.public_id.ToString();
-
-                        UserPhoto photo = new UserPhoto
+                        try
                         {
-                            PhotoUrl = imageUrl,
-                            PublicId = publicId,
-                            AppUserId= userId,
-                            IsMain = true,                            
-                        };
-                            await _db.UserPhotos.AddAsync(photo); 
-                            await _db.SaveChangesAsync();
+                            var response = await httpClient.PostAsync(apiUrl, formData);
+                            var guid = Guid.NewGuid();
+                            string responseJson = await response.Content.ReadAsStringAsync();
+                            dynamic responseObject = JObject.Parse(responseJson);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                string imageUrl = responseObject.secure_url.ToString();
+                                string publicId = responseObject.public_id.ToString();
+
+                                UserPhoto photo = new UserPhoto
+                                {
+                                    PhotoUrl = imageUrl,
+                                    PublicId = publicId,
+                                    AppUserId = userId,
+                                    IsMain = true,
+                                    Created=DateTime.Now
+                                };
+
+                                await _db.UserPhotos.AddAsync(photo);
+                                await _db.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                // Handle the API request failure here, e.g., log the error or return an error response.
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle exceptions that occurred during the API request.
+                            // You can log the error or return an error response.
+                        }
                     }
                 }
             }
+
             return new Common()
             {
                 Message = "Photo Uploaded Successfully",
@@ -300,5 +318,11 @@ namespace ECommerceWebsite.Repositories
             };
         }
 
+        public List<UserPhoto> GetUsersProfilePicture(string Key)
+        {
+            var result = _tokenService.GetUserDetailsFromToken(Key);
+            var userInfo = _db.Users.AsNoTracking().Include(x=>x.UserPhotos).FirstOrDefault(x=>x.Id == Convert.ToInt32(result));
+            return userInfo.UserPhotos.ToList();
+        }
     }
 }
