@@ -1,20 +1,32 @@
-﻿@model AppUser
+﻿@model List<AppUser>
 <div class="card">
     <div class="card-header">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     User Profile
                 </div>
-                <div class="col-md-6 text-right">
-                    <!-- Button on the right -->
+                <div class="col-md-4">
+                    <div class="profile-picture">
+                        @if (string.IsNullOrEmpty(ViewBag.ProfilePicture))
+                        {
+                            <img src="~/files/DefaultProfilePicture.png" alt="Default Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
+                        }
+                        else
+                        {
+                            <img src="@ViewBag.ProfilePicture" alt="Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
+
+                        }
+                    </div>
+                </div>
+                <div class="col-md-4 text-right">
+                    <!-- Button to Open Full-Size Profile Picture -->
                     <button type="button" class="btn  btn-outline-primary" data-toggle="modal" data-target="#exampleModal">
                         Upload Photo
                     </button>
                 </div>
             </div>
         </div>
-
         @using (Html.BeginForm("UploadImage", "UserProfile", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -39,12 +51,61 @@
             </div>
 
         }
-        <!-- Modal -->
-
     </div>
     <div class="card-body">
-        <h5 class="card-title">@Model.Username</h5>
-        <p class="card-text">Email: @Model.Email</p>
-        <p class="card-text">Bio: @Model.PhoneNumber</p>
+        @foreach (var user in Model.DistinctBy(u=>u.PhoneNumber))
+        {
+            <h5 class="card-title">@user.Username</h5>
+            <p class="card-text">Email: @user.Email</p>
+            <p class="card-text">Bio: @user.PhoneNumber</p>
+        }
+    </div>
+
+    <div class="card-body">        
+         <img src="@ViewBag.PhotoList" style="width:300px; height:300px;" />
+        
     </div>
 </div>
+
+<!-- Full-Size Profile Picture Modal -->
+<div class="modal fade" id="profilePictureModal" tabindex="-1" role="dialog" aria-labelledby="profilePictureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profilePictureModalLabel">Profile Picture</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (string.IsNullOrEmpty(ViewBag.ProfilePicture))
+                {
+                    <img src="~/files/DefaultProfilePicture.png" alt="Profile Picture" class="img-fluid" />
+                }
+                else
+                {
+                    <img src="@ViewBag.ProfilePicture" alt="Profile Picture" class="img-fluid" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-picture {
+        text-align: center;
+    }
+
+    .profile-image {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 50%;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .profile-image:hover {
+            transform: scale(1.1); /* Increase size on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow on hover */
+        }
+</style>

@@ -36,6 +36,7 @@ namespace ECommerceWebsite
             // Add services to the container.
             services.AddControllersWithViews();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenService, TokenService>();
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();

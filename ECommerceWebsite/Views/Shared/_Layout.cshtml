@@ -1,11 +1,11 @@
 ﻿@using ECommerceWebsite.Services;
 @using ECommerceWebsite.Repositories;
 @inject ITokenService _tokenService;
-@inject IUserRepository _userRepository;
+@* @inject IUserRepository _userRepository; *@
 @{
 
     var userDetails = _tokenService.GetUserDetailsFromToken("username");
-    var getUserProfilePicture = _userRepository.GetUsersProfilePicture("userid");
+    //var getUserProfilePicture = _userRepository.GetUsersProfilePicture("userid");
 }
 
 <!DOCTYPE html>
