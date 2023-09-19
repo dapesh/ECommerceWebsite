@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ECommerceWebsite.Migrations
 {
     /// <inheritdoc />
-    public partial class updatedmigration : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,7 +90,7 @@ namespace ECommerceWebsite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserPhoto",
+                name: "UserPhotos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -103,9 +103,9 @@ namespace ECommerceWebsite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserPhoto", x => x.Id);
+                    table.PrimaryKey("PK_UserPhotos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserPhoto_Users_AppUserId",
+                        name: "FK_UserPhotos_Users_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -160,8 +160,8 @@ namespace ECommerceWebsite.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserPhoto_AppUserId",
-                table: "UserPhoto",
+                name: "IX_UserPhotos_AppUserId",
+                table: "UserPhotos",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
@@ -188,7 +188,7 @@ namespace ECommerceWebsite.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "UserPhoto");
+                name: "UserPhotos");
 
             migrationBuilder.DropTable(
                 name: "UserRatings");

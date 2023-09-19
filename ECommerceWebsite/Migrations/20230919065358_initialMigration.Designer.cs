@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceWebsite.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230914060938_updatedmigration")]
-    partial class updatedmigration
+    [Migration("20230919065358_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,7 +175,7 @@ namespace ECommerceWebsite.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("UserPhoto");
+                    b.ToTable("UserPhotos");
                 });
 
             modelBuilder.Entity("ECommerceWebsite.Models.UserRating", b =>
