@@ -22,18 +22,28 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public IActionResult UserProfileDetails() 
         {
-            //var userimages = _unitOfWork.UserRepository.GetUsersProfilePicture("username");
-            
-            AppUser user = new AppUser();
-            var userphonenumber = _unitOfWork.TokenService.GetUserDetailsFromToken("mobilephone");
-            var userDetails = _unitOfWork.UserRepository.GetUserByPhoneNumberAsync(userphonenumber);
-            var AppUser = new AppUser()
+            var userimages = _unitOfWork.UserRepository.GetUsersProfilePicture("userid");
+            var appUsers = new List<AppUser>();
+            foreach(var userimage in userimages)
             {
-                Username = userDetails.Value.Username,
-                Email = userDetails.Value.Email,
-                PhoneNumber = userDetails.Value.PhoneNumber
-            };
-            return View(AppUser);
+                if(userimage != null && userimage.IsMain==true) 
+                {
+                    ViewBag.ProfilePicture = userimage.PhotoUrl;
+                }
+                if(userimage != null && userimage.IsMain==false)
+                {
+                    ViewBag.PhotoList = userimage.PhotoUrl;
+                }
+                var appUser = new AppUser() 
+                {
+                    Username = userimage.User.Username,
+                    Email = userimage.User.Email,
+                    PhoneNumber = userimage.User.PhoneNumber,
+                };
+                appUsers.Add(appUser);
+            }
+            
+            return View(appUsers);
         }
         [HttpPost]
         public IActionResult UploadImage(IFormFile file)
