@@ -13,9 +13,9 @@ namespace ECommerceWebsite.Models
         public string Email { get; set; }
         public DateTime Created { get; set; } = DateTime.Now;
         public string ProfilePicturePublicId { get; set; }
-        public virtual ICollection<UserPhoto> UserPhotos { get; set; }
-        public virtual ICollection<UserRating> RatingsGiven { get; set; }
-        public ICollection<UserRole> UserRoles { get; set; }
+        public List<UserPhoto> UserPhotos { get; set; }
+        public List<UserRating> RatingsGiven { get; set; }
+        public List<UserRole> UserRoles { get; set; }
 
     }
 }

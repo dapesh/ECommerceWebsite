@@ -2,6 +2,7 @@
 using ECommerceWebsite.Repositories;
 using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;
 
 namespace ECommerceWebsite.Controllers
@@ -22,33 +23,19 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public IActionResult UserProfileDetails() 
         {
-            var userimages = _unitOfWork.UserRepository.GetUsersProfilePicture("userid");
-            var appUsers = new List<AppUser>();
-            foreach(var userimage in userimages)
+            List<SelectListItem> dropdownItems = new List<SelectListItem>
             {
-                if(userimage != null && userimage.IsMain==true) 
-                {
-                    ViewBag.ProfilePicture = userimage.PhotoUrl;
-                }
-                if(userimage != null && userimage.IsMain==false)
-                {
-                    ViewBag.PhotoList = userimage.PhotoUrl;
-                }
-                var appUser = new AppUser() 
-                {
-                    Username = userimage.User.Username,
-                    Email = userimage.User.Email,
-                    PhoneNumber = userimage.User.PhoneNumber,
-                };
-                appUsers.Add(appUser);
-            }
-            
-            return View(appUsers);
+                new SelectListItem { Value = "1", Text = "Profile Picture" },
+                new SelectListItem { Value = "0", Text = "Others" },
+            };
+            ViewBag.DropDownItems = dropdownItems;
+            var userimages = _unitOfWork.UserRepository.GetUsersProfilePicture("userid");
+            return View(userimages);
         }
         [HttpPost]
-        public IActionResult UploadImage(IFormFile file)
+        public IActionResult UploadImage(int selectedOption, IFormFile file)
         {
-            var result = _unitOfWork.UserRepository.UploadUserImage(file);
+            var result = _unitOfWork.UserRepository.UploadUserImage(selectedOption,file);
             return RedirectToAction("UserProfileDetails", result);
         }
     }

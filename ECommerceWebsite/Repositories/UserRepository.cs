@@ -244,7 +244,7 @@ namespace ECommerceWebsite.Repositories
            
         }
 
-        public async Task<Common> UploadUserImage(IFormFile file)
+        public async Task<Common> UploadUserImage(int selectedOption, IFormFile file)
         {
             var userphonenumber = _tokenService.GetUserDetailsFromToken("mobilephone");
             var userDetails = GetUserByPhoneNumberAsync(userphonenumber);
@@ -283,16 +283,15 @@ namespace ECommerceWebsite.Repositories
                             {
                                 string imageUrl = responseObject.secure_url.ToString();
                                 string publicId = responseObject.public_id.ToString();
-
+                                bool isMain = (selectedOption == 1);
                                 UserPhoto photo = new UserPhoto
                                 {
                                     PhotoUrl = imageUrl,
                                     PublicId = publicId,
                                     AppUserId = userId,
-                                    IsMain = true,
+                                    IsMain = isMain,
                                     Created=DateTime.Now
                                 };
-
                                 await _db.UserPhotos.AddAsync(photo);
                                 await _db.SaveChangesAsync();
                             }

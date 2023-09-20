@@ -1,4 +1,4 @@
-﻿@model List<AppUser>
+﻿@model List<UserPhoto>
 <div class="card">
     <div class="card-header">
         <div class="container">
@@ -8,15 +8,20 @@
                 </div>
                 <div class="col-md-4">
                     <div class="profile-picture">
-                        @if (string.IsNullOrEmpty(ViewBag.ProfilePicture))
+                        @foreach(var profilePicture in Model)
                         {
-                            <img src="~/files/DefaultProfilePicture.png" alt="Default Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
-                        }
-                        else
-                        {
-                            <img src="@ViewBag.ProfilePicture" alt="Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
+                            @if (string.IsNullOrEmpty(profilePicture.PhotoUrl))
+                            {
+                                <img src="~/files/DefaultProfilePicture.png" alt="Default Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
+                            }
 
+                            else if (profilePicture.IsMain == true)
+                            {
+                                <img src="@profilePicture.PhotoUrl" alt="Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
+
+                            }
                         }
+
                     </div>
                 </div>
                 <div class="col-md-4 text-right">
@@ -39,12 +44,24 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="file" name="file" />
-                            <input type="submit" value="Upload" />
+                            <div class ="row">
+
+                                <div class="col-md-6">
+                                    <input type="file" name="file" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dropdown">Photo Type</label>
+                                    <select class="form-control" id="dropdown" name="selectedOption">
+                                        @foreach (var item in ViewBag.DropDownItems)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
+                            <button type="submit" value="Upload" class="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -52,18 +69,21 @@
 
         }
     </div>
-    <div class="card-body">
+@*    <div class="card-body">
         @foreach (var user in Model.DistinctBy(u=>u.PhoneNumber))
         {
             <h5 class="card-title">@user.Username</h5>
             <p class="card-text">Email: @user.Email</p>
             <p class="card-text">Bio: @user.PhoneNumber</p>
         }
-    </div>
+    </div>*@
 
-    <div class="card-body">        
-         <img src="@ViewBag.PhotoList" style="width:300px; height:300px;" />
-        
+    <div class="card-body">
+            @foreach (var photoUrl in Model)
+            {
+                var imagesrc = photoUrl.PhotoUrl;
+                <img src="@imagesrc" alt="Non-Main Photo">
+            }
     </div>
 </div>
 
@@ -78,13 +98,16 @@
                 </button>
             </div>
             <div class="modal-body">
-                @if (string.IsNullOrEmpty(ViewBag.ProfilePicture))
+                @foreach(var profilePic in Model)
                 {
-                    <img src="~/files/DefaultProfilePicture.png" alt="Profile Picture" class="img-fluid" />
-                }
-                else
-                {
-                    <img src="@ViewBag.ProfilePicture" alt="Profile Picture" class="img-fluid" />
+                    @if (string.IsNullOrEmpty(profilePic.PhotoUrl))
+                    {
+                        <img src="~/files/DefaultProfilePicture.png" alt="Profile Picture" class="img-fluid" />
+                    }
+                    else if(profilePic.IsMain==true)
+                    {
+                        <img src="@profilePic.PhotoUrl" alt="Profile Picture" class="img-fluid" />
+                    }
                 }
             </div>
         </div>

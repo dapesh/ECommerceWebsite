@@ -12,6 +12,6 @@ namespace ECommerceWebsite.Models
         public int RatedByUserID { get; set; }
         public DateTime Timestamp { get; set; }
 
-        public virtual AppUser RatedByUser { get; set; }
+        public AppUser RatedByUser { get; set; }
     }
 }
