@@ -284,6 +284,19 @@ namespace ECommerceWebsite.Repositories
                                 string imageUrl = responseObject.secure_url.ToString();
                                 string publicId = responseObject.public_id.ToString();
                                 bool isMain = (selectedOption == 1);
+                                if (isMain == true)
+                                {
+                                    var userPhotos = _db.UserPhotos.Where(x=>x.AppUserId==userId);
+                                    foreach(var photos in userPhotos)
+                                    {
+                                        if(photos.IsMain == true)
+                                        {
+                                            photos.IsMain = false;
+                                        }
+                                    }
+                                    _db.SaveChanges();
+
+                                }
                                 UserPhoto photo = new UserPhoto
                                 {
                                     PhotoUrl = imageUrl,
@@ -316,7 +329,6 @@ namespace ECommerceWebsite.Repositories
                 StatusCode = StatusCodes.Status200OK
             };
         }
-
         public List<UserPhoto> GetUsersProfilePicture(string Key)
         {
             var result = _tokenService.GetUserDetailsFromToken(Key);
