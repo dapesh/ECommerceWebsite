@@ -69,23 +69,16 @@
 
         }
     </div>
-@*    <div class="card-body">
-        @foreach (var user in Model.DistinctBy(u=>u.PhoneNumber))
-        {
-            <h5 class="card-title">@user.Username</h5>
-            <p class="card-text">Email: @user.Email</p>
-            <p class="card-text">Bio: @user.PhoneNumber</p>
-        }
-    </div>*@
 
-    <div class="card-body">
-            @foreach (var photoUrl in Model)
-            {
-                var imagesrc = photoUrl.PhotoUrl;
+    <div class="image-grid">
+        @foreach (var photoUrl in Model)
+        {
+            var imagesrc = photoUrl.PhotoUrl;
+            <div class="card">
                 <img src="@imagesrc" alt="Non-Main Photo">
-            }
+            </div>
+        }
     </div>
-</div>
 
 <!-- Full-Size Profile Picture Modal -->
 <div class="modal fade" id="profilePictureModal" tabindex="-1" role="dialog" aria-labelledby="profilePictureModalLabel" aria-hidden="true">
@@ -113,8 +106,31 @@
         </div>
     </div>
 </div>
+</div>
 
 <style>
+    /* Style for the image grid container */
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust column width as needed */
+        gap: 16px; /* Adjust the gap between images */
+    }
+
+    /* Style for each image card */
+    .image-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        /* Style for the images inside each card */
+        .image-card img {
+            max-width: 100%;
+            height: auto;
+        }
+
     .profile-picture {
         text-align: center;
     }
