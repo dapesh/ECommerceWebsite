@@ -10,13 +10,14 @@ namespace ECommerceWebsite.Repositories
         Task<Common> RegisterUser(RegisterDTO user);
         Task<Common> LoginUser(LoginDTO user);
         Task AddUser(AppUser user);
-        ActionResult<AppUser> GetUserByPhoneNumberAsync(string phoneNumber);
+        Task<ActionResult<AppUser>> GetUserByPhoneNumberAsync(string phoneNumber);
         ActionResult<AppUser> GetUserByEmailAsync(string email);
         Task<Common> GetUserNameForOtpVerification(string otp, string email);
         Task<Common> ChangePassword(string email,string password);
 
-        Task<Common> UploadUserImage(int selectedOption, IFormFile file);
+        Task<Common> UploadUserImage(int selectedOption, List<IFormFile> file, string albumTitle);
 
         List<UserPhoto> GetUsersProfilePicture(string Key);
+        List <Album> GetAlbumDetails(int albumId);
     }
 }

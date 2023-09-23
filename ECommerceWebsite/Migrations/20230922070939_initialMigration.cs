@@ -12,6 +12,19 @@ namespace ECommerceWebsite.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Albums",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Albums", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ExcelUpload",
                 columns: table => new
                 {
@@ -95,7 +108,9 @@ namespace ECommerceWebsite.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AppUserId = table.Column<int>(type: "int", nullable: false),
+                    AlbumId = table.Column<int>(type: "int", nullable: false),
                     PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsMain = table.Column<bool>(type: "bit", nullable: false),
                     PhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -104,6 +119,12 @@ namespace ECommerceWebsite.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserPhotos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPhotos_Albums_AlbumId",
+                        column: x => x.AlbumId,
+                        principalTable: "Albums",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserPhotos_Users_AppUserId",
                         column: x => x.AppUserId,
@@ -160,6 +181,11 @@ namespace ECommerceWebsite.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserPhotos_AlbumId",
+                table: "UserPhotos",
+                column: "AlbumId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserPhotos_AppUserId",
                 table: "UserPhotos",
                 column: "AppUserId");
@@ -195,6 +221,9 @@ namespace ECommerceWebsite.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "Albums");
 
             migrationBuilder.DropTable(
                 name: "RoleManagers");

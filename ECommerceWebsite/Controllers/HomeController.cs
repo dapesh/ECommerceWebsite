@@ -39,7 +39,7 @@ namespace ECommerceWebsite.Controllers
             var mobilephone = "mobilephone";
             var mobileNumber = _tokenService.GetUserDetailsFromToken(mobilephone);
             var result = _unitOfWork.UserRepository.GetUserByPhoneNumberAsync(mobileNumber);
-            var userName = result.Value.Username;
+            var userName = result.Result.Value.Username;
             return View();
         }
 
