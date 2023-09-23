@@ -30,13 +30,20 @@ namespace ECommerceWebsite.Controllers
             };
             ViewBag.DropDownItems = dropdownItems;
             var userimages = _unitOfWork.UserRepository.GetUsersProfilePicture("userid");
+            var albumId = userimages.FirstOrDefault().AlbumId;
+            var albumDetails = _unitOfWork.UserRepository.GetAlbumDetails(albumId);
+            foreach(var albumName in userimages)
+            {
+                ViewBag.AlbumName = albumName.Title;
+            }
             return View(userimages);
         }
         [HttpPost]
-        public IActionResult UploadImage(int selectedOption, IFormFile file)
+        public async Task<IActionResult> UploadImage(List<IFormFile> files, int selectedOption, string albumTitle)
         {
-            var result = _unitOfWork.UserRepository.UploadUserImage(selectedOption,file);
-            return RedirectToAction("UserProfileDetails", result);
+            
+            var result = await _unitOfWork.UserRepository.UploadUserImage(selectedOption,files,albumTitle);
+            return RedirectToAction("UserProfileDetails"/*, result*/);
         }
     }
 }

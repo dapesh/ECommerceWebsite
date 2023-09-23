@@ -46,9 +46,12 @@
                         <div class="modal-body">
                             <div class ="row">
 
-                                <div class="col-md-6">
+                                @* <div class="col-md-12">
                                     <input type="file" name="file" />
-                                </div>
+                                </div> *@
+                                <label for="photos">Select Photos:</label>
+                                <input type="file" id="photos" name="files" multiple />
+                   
                                 <div class="col-md-6">
                                     <label for="dropdown">Photo Type</label>
                                     <select class="form-control" id="dropdown" name="selectedOption">
@@ -57,6 +60,10 @@
                                             <option value="@item.Value">@item.Text</option>
                                         }
                                     </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="albumTitle">Album Title:</label>
+                                    <input type="text" class="form-control" id="albumTitle" name="albumTitle">
                                 </div>
                             </div>
                         </div>
@@ -74,9 +81,13 @@
         @foreach (var photoUrl in Model)
         {
             var imagesrc = photoUrl.PhotoUrl;
-            <div class="card">
-                <img src="@imagesrc" alt="Non-Main Photo">
-            </div>
+            //@if(photoUrl.IsMain == false)
+            //{
+                <div class="card">
+                <h3>@ViewBag.AlbumName</h3>
+                    <img src="@imagesrc" alt="Non-Main Photo">
+                </div>
+            //}
         }
     </div>
 

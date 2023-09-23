@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerceWebsite.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230920032316_initialMigration")]
+    [Migration("20230922070939_initialMigration")]
     partial class initialMigration
     {
         /// <inheritdoc />
@@ -24,6 +24,22 @@ namespace ECommerceWebsite.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ECommerceWebsite.Models.Album", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Albums");
+                });
 
             modelBuilder.Entity("ECommerceWebsite.Models.AppUser", b =>
                 {
@@ -156,6 +172,9 @@ namespace ECommerceWebsite.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AlbumId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AppUserId")
                         .HasColumnType("int");
 
@@ -171,7 +190,12 @@ namespace ECommerceWebsite.Migrations
                     b.Property<string>("PublicId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AlbumId");
 
                     b.HasIndex("AppUserId");
 
@@ -225,11 +249,19 @@ namespace ECommerceWebsite.Migrations
 
             modelBuilder.Entity("ECommerceWebsite.Models.UserPhoto", b =>
                 {
+                    b.HasOne("ECommerceWebsite.Models.Album", "Album")
+                        .WithMany("UserPhotos")
+                        .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ECommerceWebsite.Models.AppUser", "User")
                         .WithMany("UserPhotos")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Album");
 
                     b.Navigation("User");
                 });
@@ -262,6 +294,11 @@ namespace ECommerceWebsite.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ECommerceWebsite.Models.Album", b =>
+                {
+                    b.Navigation("UserPhotos");
                 });
 
             modelBuilder.Entity("ECommerceWebsite.Models.AppUser", b =>

@@ -16,9 +16,15 @@ namespace ECommerceWebsite.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<UserRating> UserRatings { get; set; }
         public DbSet<UserPhoto> UserPhotos { get; set; }
+        public DbSet<Album> Albums { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<UserPhoto>()
+            .HasOne(p => p.Album)
+            .WithMany(a => a.UserPhotos)
+            .HasForeignKey(p => p.AlbumId);
+
             modelBuilder.Entity<AppUser>()
             .HasMany(u => u.RatingsGiven)
             .WithOne(r => r.RatedByUser)

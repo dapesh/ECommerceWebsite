@@ -18,7 +18,8 @@ namespace ECommerceWebsite
         public static IServiceCollection GetServices(this IServiceCollection services,IConfiguration configuration)
         {
             var cloudinarySettings = configuration.GetSection("CloudinarySettings").Get<CloudinarySettings>();
-            services.AddSingleton(new Cloudinary(new Account(
+            services.AddSingleton
+                (new Cloudinary(new Account(
             cloudinarySettings.CloudName,
             cloudinarySettings.ApiKey,
             cloudinarySettings.ApiSecret
