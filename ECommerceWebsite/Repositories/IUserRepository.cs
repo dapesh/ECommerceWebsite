@@ -15,9 +15,11 @@ namespace ECommerceWebsite.Repositories
         Task<Common> GetUserNameForOtpVerification(string otp, string email);
         Task<Common> ChangePassword(string email,string password);
 
-        Task<Common> UploadUserImage(int selectedOption, List<IFormFile> file, string albumTitle);
+        Task<Common> UploadUserImage(bool selectedOption, List<IFormFile> file, string albumTitle);
 
         List<UserPhoto> GetUsersProfilePicture(string Key);
-        List <Album> GetAlbumDetails(int albumId);
+        List <Album> GetAlbumDetails(int userid);
+        List<Album> GetDropdownForDefaultAlbum();
+
     }
 }

@@ -4,6 +4,7 @@ using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Bcpg;
 
 namespace ECommerceWebsite.Controllers
 {
@@ -23,23 +24,28 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public IActionResult UserProfileDetails() 
         {
-            List<SelectListItem> dropdownItems = new List<SelectListItem>
+            var defaultAlbums = _unitOfWork.UserRepository.GetDropdownForDefaultAlbum();
+            var dropdownItems = defaultAlbums.Select(albums => new SelectListItem
             {
-                new SelectListItem { Value = "1", Text = "Profile Picture" },
-                new SelectListItem { Value = "0", Text = "Others" },
-            };
+                Value = albums.IsMainPicture.ToString(),
+                Text = albums.Title
+            }).ToList();
             ViewBag.DropDownItems = dropdownItems;
+
             var userimages = _unitOfWork.UserRepository.GetUsersProfilePicture("userid");
-            var albumId = userimages.FirstOrDefault().AlbumId;
-            var albumDetails = _unitOfWork.UserRepository.GetAlbumDetails(albumId);
-            foreach(var albumName in userimages)
+            var albumsWithPhotos = new List<Album>();
+            foreach (var users in userimages)
             {
-                ViewBag.AlbumName = albumName.Title;
+                var UserId = users.User.Id;
+                albumsWithPhotos=_unitOfWork.UserRepository.GetAlbumDetails(UserId);
             }
-            return View(userimages);
+         
+
+
+            return View(albumsWithPhotos);
         }
         [HttpPost]
-        public async Task<IActionResult> UploadImage(List<IFormFile> files, int selectedOption, string albumTitle)
+        public async Task<IActionResult> UploadImage(List<IFormFile> files, bool selectedOption, string albumTitle)
         {
             
             var result = await _unitOfWork.UserRepository.UploadUserImage(selectedOption,files,albumTitle);

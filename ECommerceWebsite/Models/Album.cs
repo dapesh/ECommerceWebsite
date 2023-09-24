@@ -7,6 +7,9 @@ namespace ECommerceWebsite.Models
         [Key]
         public int Id { get; set; }
         public string Title { get; set; }
+        public bool IsDefaultAlbum { get; set; }
+        public bool IsDeleted { get; set; }
+        public bool IsMainPicture { get; set; }
         public List<UserPhoto> UserPhotos { get; set; }
     }
 }

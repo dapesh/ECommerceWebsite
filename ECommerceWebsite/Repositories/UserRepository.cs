@@ -243,112 +243,6 @@ namespace ECommerceWebsite.Repositories
             }
            
         }
-
-
-        //public async Task<Common> UploadUserImage(int selectedOption, List<IFormFile> files, string albumTitle)
-        //{
-        //    var userphonenumber = _tokenService.GetUserDetailsFromToken("mobilephone");
-        //    var userDetails = GetUserByPhoneNumberAsync(userphonenumber);
-        //    if(userDetails == null)
-        //    {
-        //        return new Common()
-        //        {
-        //            Message = "Invalid Phone Number",
-        //            Type = "Error",
-        //            StatusCode = StatusCodes.Status302Found
-        //        };
-        //    }
-        //    var username = userDetails.Value.Username;
-        //    var userId = userDetails.Value.Id;
-        //    if (files != null && files.Count > 0)
-        //    {
-        //        foreach(var file in files)
-        //        {
-        //            if (file.Length > 0)
-        //            {
-        //                                using (var stream = file.OpenReadStream())
-        //        {
-        //            long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-
-        //            var apiUrl = $"https://api.cloudinary.com/v1_1/digo594g6/image/upload?timestamp={timestamp}&upload_preset=sfbot1hn";
-
-        //            using (var httpClient = new HttpClient())
-        //            {
-        //                var formData = new MultipartFormDataContent();
-        //                formData.Add(new StreamContent(stream), "file", file.FileName);
-
-        //                try
-        //                {
-        //                    var response = await httpClient.PostAsync(apiUrl, formData);
-        //                    var guid = Guid.NewGuid();
-        //                    string responseJson = await response.Content.ReadAsStringAsync();
-        //                    dynamic responseObject = JObject.Parse(responseJson);
-
-        //                    if (response.IsSuccessStatusCode)
-        //                    {
-        //                        string imageUrl = responseObject.secure_url.ToString();
-        //                        string publicId = responseObject.public_id.ToString();
-        //                        bool isMain = (selectedOption == 1);
-        //                        if (isMain == true)
-        //                        {
-        //                            var userPhotos = _db.UserPhotos.Where(x=>x.AppUserId==userId);
-        //                            foreach(var photos in userPhotos)
-        //                            {
-        //                                if(photos.IsMain == true)
-        //                                {
-        //                                    photos.IsMain = false;
-        //                                }
-        //                            }
-        //                            _db.SaveChanges();
-
-        //                        }
-        //                        var existingAlbum = await _db.Albums.SingleOrDefaultAsync(a => a.Title == albumTitle);
-        //                        if (existingAlbum == null)
-        //                        {
-        //                            existingAlbum = new Album
-        //                            {
-        //                                Title = albumTitle
-        //                            };
-        //                            _db.Albums.Add(existingAlbum);
-        //                        }
-        //                        await _db.SaveChangesAsync();
-        //                        UserPhoto photo = new UserPhoto
-        //                        {
-        //                            PhotoUrl = imageUrl,
-        //                            PublicId = publicId,
-        //                            AppUserId = userId,
-        //                            IsMain = isMain,
-        //                            Created=DateTime.Now,
-        //                            AlbumId= existingAlbum.Id,
-        //                            Title= albumTitle,
-        //                        };
-        //                        await _db.UserPhotos.AddAsync(photo);
-        //                        await _db.SaveChangesAsync();
-        //                    }
-        //                    else
-        //                    {
-        //                        // Handle the API request failure here, e.g., log the error or return an error response.
-        //                    }
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    // Handle exceptions that occurred during the API request.
-        //                    // You can log the error or return an error response.
-        //                }
-        //            }
-        //        }
-
-        //            }
-        //        }
-        //    }
-
-        //    return new Common()
-        //    {
-        //        Message = "Photo Uploaded Successfully",
-        //        Type = "Success",
-        //        StatusCode = StatusCodes.Status200OK
-        //    };
-        //}
         public List<UserPhoto> GetUsersProfilePicture(string Key)
         {
             var result = _tokenService.GetUserDetailsFromToken(Key);
@@ -356,13 +250,7 @@ namespace ECommerceWebsite.Repositories
             return userInfo.UserPhotos.ToList();
         }
 
-        public List<Album> GetAlbumDetails(int albumId)
-        {
-            var albumDetails = _db.Albums.Where(x => x.Id == albumId).Include(x=>x.UserPhotos);
-            return albumDetails.ToList();
-        }
-
-        public async Task<Common> UploadUserImage(int selectedOption, List<IFormFile> files, string albumTitle)
+        public async Task<Common> UploadUserImage(bool selectedOption, List<IFormFile> files, string albumTitle)
         {
             var userphonenumber = _tokenService.GetUserDetailsFromToken("mobilephone");
             var userDetails = GetUserByPhoneNumberAsync(userphonenumber);
@@ -414,7 +302,7 @@ namespace ECommerceWebsite.Repositories
                                         {
                                             string imageUrl = responseObject.secure_url.ToString();
                                             string publicId = responseObject.public_id.ToString();
-                                            bool isMain = (selectedOption == 1);
+                                            bool isMain = (selectedOption == true);
 
                                             if (isMain == true)
                                             {
@@ -479,5 +367,19 @@ namespace ECommerceWebsite.Repositories
                 StatusCode = StatusCodes.Status200OK
             };
         }
+
+        public List<Album> GetDropdownForDefaultAlbum()
+        {
+            return _db.Albums.Where(a=>a.IsDefaultAlbum==true &&a.IsDeleted==false).ToList();
+
+        }
+
+        public List<Album> GetAlbumDetails(int userid)
+        {
+            var albumsWithPhotos = _db.Albums.Include(a => a.UserPhotos.Where(s=>s.AppUserId==userid)).ToList();
+            return albumsWithPhotos;
+        }
+
+
     }
 }

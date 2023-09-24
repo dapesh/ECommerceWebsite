@@ -1,4 +1,56 @@
-﻿@model List<UserPhoto>
+﻿@model List<Album>
+<style>
+    .img_sr{
+    width:100%;
+    height: 100%;
+    cursor:pointer;
+    }
+
+    .img_sr2 {
+        width: 50%;
+        height: 50%;
+    }
+</style>
+<style>
+    /* Style for the image grid container */
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust column width as needed */
+        gap: 16px; /* Adjust the gap between images */
+    }
+
+    /* Style for each image card */
+    .image-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        /* Style for the images inside each card */
+        .image-card img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    .profile-picture {
+        text-align: center;
+    }
+
+    .profile-image {
+        width: 300px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 50%;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .profile-image:hover {
+            transform: scale(1.1); /* Increase size on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow on hover */
+        }
+</style>
 <div class="card">
     <div class="card-header">
         <div class="container">
@@ -10,15 +62,18 @@
                     <div class="profile-picture">
                         @foreach(var profilePicture in Model)
                         {
-                            @if (string.IsNullOrEmpty(profilePicture.PhotoUrl))
+                            @foreach (var img in profilePicture.UserPhotos)
                             {
-                                <img src="~/files/DefaultProfilePicture.png" alt="Default Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
-                            }
+                                @if (string.IsNullOrEmpty(img.PhotoUrl))
+                                {
+                                    <img src="~/files/DefaultProfilePicture.png" alt="Default Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
+                                }
 
-                            else if (profilePicture.IsMain == true)
-                            {
-                                <img src="@profilePicture.PhotoUrl" alt="Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
+                                else if (img.IsMain == true)
+                                {
+                                    <img src="@img.PhotoUrl" alt="Profile Picture" class="rounded-circle profile-image" style="width: 300px; height: 300px; cursor: pointer;" data-toggle="modal" data-target="#profilePictureModal" />
 
+                                }
                             }
                         }
 
@@ -80,14 +135,12 @@
     <div class="image-grid">
         @foreach (var photoUrl in Model)
         {
-            var imagesrc = photoUrl.PhotoUrl;
-            //@if(photoUrl.IsMain == false)
-            //{
-                <div class="card">
-                <h3>@ViewBag.AlbumName</h3>
-                    <img src="@imagesrc" alt="Non-Main Photo">
-                </div>
-            //}
+                  <div class="card">
+        <h3>@ViewBag.AlbumName</h3>
+                <label>@photoUrl.Title</label>
+                <img class="img_sr" src="~/photos/defaultprofilepicture.png" alt="Non-Main Photo" data-toggle="modal" data-target="#albumPictureModal" data-id="@photoUrl.Id" />
+        </div>
+            
         }
     </div>
 
@@ -104,58 +157,78 @@
             <div class="modal-body">
                 @foreach(var profilePic in Model)
                 {
-                    @if (string.IsNullOrEmpty(profilePic.PhotoUrl))
-                    {
-                        <img src="~/files/DefaultProfilePicture.png" alt="Profile Picture" class="img-fluid" />
-                    }
-                    else if(profilePic.IsMain==true)
-                    {
-                        <img src="@profilePic.PhotoUrl" alt="Profile Picture" class="img-fluid" />
-                    }
+                        @foreach(var img in profilePic.UserPhotos)
+                        {
+                            @if (string.IsNullOrEmpty(img.PhotoUrl))
+                            {
+                                <img src="~/files/DefaultProfilePicture.png" alt="Profile Picture" class="img-fluid" />
+                            }
+                            else if (img.IsMain == true)
+                            {
+                                <img src="@img.PhotoUrl" alt="Profile Picture" class="img-fluid" />
+                            }
+                        }
+                        
                 }
             </div>
         </div>
     </div>
 </div>
+
 </div>
 
-<style>
-    /* Style for the image grid container */
-    .image-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust column width as needed */
-        gap: 16px; /* Adjust the gap between images */
-    }
 
-    /* Style for each image card */
-    .image-card {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+<div class="modal fade" id="albumPictureModal" tabindex="-1" role="dialog" aria-labelledby="albumPictureModalLabelalbumPictureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="albumPictureModalLabel">Album Picture</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
 
-        /* Style for the images inside each card */
-        .image-card img {
-            max-width: 100%;
-            height: auto;
-        }
+                @foreach (var photoUrl in Model)
+                {
+                    <div class="row">
+                        
+                        @foreach(var photoURL in photoUrl.UserPhotos)
+                        {
 
-    .profile-picture {
-        text-align: center;
-    }
+                            <div id="carouselExampleControls-@photoURL.PhotoUrl" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <h1>@photoURL.Title</h1>
+                                    <div class="carousel-item active">
+                                        <img class="d-block w-100" src="@photoURL.PhotoUrl" alt="First slide">
+                                    </div>
+                                </div>
+                                <a class="carousel-control-prev" href="#carouselExampleControls-@photoURL.PhotoUrl" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselExampleControls-@photoURL.PhotoUrl" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                          @*  var imagesrc = photoURL.PhotoUrl;
+            
+                            <div class="col-md-4">
+                            <h3>@ViewBag.AlbumName</h3>
+                            <label>@photoURL.Title</label>
+                            <img class="img_sr" src="@imagesrc" alt="Non-Main Photo">*@
+        
+                }
+            </div>
+            }
+            </div>
+        </div>
+    </div>
+</div>
 
-    .profile-image {
-        width: 300px;
-        height: 300px;
-        object-fit: cover;
-        border-radius: 50%;
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
 
-        .profile-image:hover {
-            transform: scale(1.1); /* Increase size on hover */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow on hover */
-        }
-</style>
+
+
+
+
