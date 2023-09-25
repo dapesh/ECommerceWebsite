@@ -5,6 +5,7 @@ using ECommerceWebsite.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -377,9 +378,15 @@ namespace ECommerceWebsite.Repositories
         public List<Album> GetAlbumDetails(int userid)
         {
             var albumsWithPhotos = _db.Albums.Include(a => a.UserPhotos.Where(s=>s.AppUserId==userid)).ToList();
+            albumsWithPhotos = albumsWithPhotos.Where(x => x.UserPhotos.Count > 0).ToList();
+         
             return albumsWithPhotos;
         }
 
-
+        public JsonResult GetPhotosByAlbum(int albumId)
+        {
+           var res = _db.UserPhotos.Where(x=>x.AlbumId==albumId).ToList();
+            return new JsonResult(res);
+        }
     }
 }

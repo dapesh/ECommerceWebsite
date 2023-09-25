@@ -132,7 +132,7 @@
         }
     </div>
 
-    <div class="image-grid">
+    @*<div class="image-grid">
         @foreach (var photoUrl in Model)
         {
                   <div class="card">
@@ -142,7 +142,9 @@
         </div>
             
         }
-    </div>
+    </div>*@
+
+
 
 <!-- Full-Size Profile Picture Modal -->
 <div class="modal fade" id="profilePictureModal" tabindex="-1" role="dialog" aria-labelledby="profilePictureModalLabel" aria-hidden="true">
@@ -174,9 +176,57 @@
         </div>
     </div>
 </div>
+    <div class="image-grid">
+        @foreach (var album in Model)
+        {
+            <div class="card album-card">
+                <label>@album.Title</label>
+                @foreach (var photo in album.UserPhotos)
+                {
+                    <div class="img-container">
+                        @if (photo.AlbumId != null)
+                        {
+                            <img class="img_sr" src="@photo.PhotoUrl" alt="Non-Main Photo" onclick="getPhotosListByAlbum(@photo.AlbumId)">
+                        }
+                        else
+                        {
+                            <img class="img_sr" src="~/photos/defaultprofilepicture.png" alt="Non-Main Photo" onclick="getPhotosListByAlbum(@photo.AlbumId)" />
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
 
 </div>
 
+<div class="modal fade" id="albumPictureModal" tabindex="-1" role="dialog" aria-labelledby="albumPictureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="albumPictureModalLabel">Album Pictures</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="carousel slide" id="albumPictureCarousel" data-ride="carousel">
+                    <div class="carousel-inner" id="album-photos-container">
+                        <!-- Photos will be displayed here -->
+                    </div>
+                    <a class="carousel-control-prev" href="#albumPictureCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#albumPictureCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="albumPictureModal" tabindex="-1" role="dialog" aria-labelledby="albumPictureModalLabelalbumPictureModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -231,4 +281,55 @@
 
 
 
+
+<script>
+    
+        function getPhotosListByAlbum(albumId) {
+            $.ajax({
+                url: '/UserProfile/GetPhotosByAlbum', 
+                type: 'GET',
+                data: { albumId: albumId },
+                success: function (data) {
+                    displayPhotosInCarousel(data);
+                },
+                error: function (error) {
+                    console.error('Error fetching photos:', error);
+                }
+            });
+        }
+
+    function displayPhotosInCarousel(response) {
+        if (response && Array.isArray(response.value)) {
+            var photos = response.value;
+            var carouselHtml = '';
+            photos.forEach(function (photo, index) {
+                carouselHtml += `
+                        <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                            <img class="d-block w-100" src="${photo.photoUrl}" alt="${photo.title}">
+                        </div>
+                    `;
+            });
+
+            $('#album-photos-container').html(carouselHtml);
+            $('#albumPictureModal').modal('show');
+        } else {
+            console.error('Invalid JSON response:', response);
+        }
+    }
+
+    $('#albumPictureModal').on('shown.bs.modal', function () {
+        $('.carousel').carousel();
+    });
+</script>
+
+<script>
+        $('#albumPictureModal').on('shown.bs.modal', function () {
+            $('.carousel').carousel(); 
+        });
+</script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JS (make sure it's the correct version) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

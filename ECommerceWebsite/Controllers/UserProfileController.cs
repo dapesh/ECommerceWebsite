@@ -51,5 +51,10 @@ namespace ECommerceWebsite.Controllers
             var result = await _unitOfWork.UserRepository.UploadUserImage(selectedOption,files,albumTitle);
             return RedirectToAction("UserProfileDetails"/*, result*/);
         }
+        public JsonResult GetPhotosByAlbum(int albumId)
+        {
+            var photos = _unitOfWork.UserRepository.GetPhotosByAlbum(albumId);
+            return Json(photos);
+        }
     }
 }

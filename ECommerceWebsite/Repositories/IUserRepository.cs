@@ -20,6 +20,7 @@ namespace ECommerceWebsite.Repositories
         List<UserPhoto> GetUsersProfilePicture(string Key);
         List <Album> GetAlbumDetails(int userid);
         List<Album> GetDropdownForDefaultAlbum();
+        JsonResult GetPhotosByAlbum(int albumId);
 
     }
 }
