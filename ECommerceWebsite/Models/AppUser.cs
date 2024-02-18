@@ -16,6 +16,6 @@ namespace ECommerceWebsite.Models
         public List<UserPhoto> UserPhotos { get; set; }
         public List<UserRating> RatingsGiven { get; set; }
         public List<UserRole> UserRoles { get; set; }
-
+        public string Location {  get; set; }
     }
 }

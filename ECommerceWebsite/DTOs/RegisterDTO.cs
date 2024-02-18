@@ -23,5 +23,6 @@ namespace ECommerceWebsite.DTOs
         [Compare("Password", ErrorMessage = "Password and Confirm Password must match.")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+        public string SelectedDistrict { get; set; }
     }
 }

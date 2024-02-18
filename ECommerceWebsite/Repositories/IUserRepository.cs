@@ -21,6 +21,7 @@ namespace ECommerceWebsite.Repositories
         List <Album> GetAlbumDetails(int userid);
         List<Album> GetDropdownForDefaultAlbum();
         JsonResult GetPhotosByAlbum(int albumId);
+        JsonResult AddAlbumTitle(string albumTitle,int AppUserID);
 
     }
 }
