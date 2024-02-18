@@ -70,7 +70,8 @@ namespace ECommerceWebsite.Repositories
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password)),
                 PasswordSalt = hmac.Key,
                 Email = model.Email,
-                Username = model.UserName
+                Username = model.UserName,
+                Location = model.SelectedDistrict
             };
             await _db.Users.AddAsync(user);
 
@@ -387,6 +388,18 @@ namespace ECommerceWebsite.Repositories
         {
            var res = _db.UserPhotos.Where(x=>x.AlbumId==albumId).ToList();
             return new JsonResult(res);
+        }
+        public JsonResult AddAlbumTitle(string albumTitle, int AppUserID)
+        {
+            var album = new Album 
+            {
+                IsDefaultAlbum=true,
+                Title = albumTitle,
+                AppUserId = AppUserID
+            };
+            _db.Albums.Add(album);
+            _db.SaveChanges();
+            return new JsonResult(album);
         }
     }
 }

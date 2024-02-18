@@ -47,7 +47,13 @@ namespace ECommerceWebsite.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadImage(List<IFormFile> files, bool selectedOption, string albumTitle)
         {
-            
+            var userPhone = _unitOfWork.TokenService.GetUserDetailsFromToken("mobilephone");
+            var appUserId = _unitOfWork.UserRepository.GetUserByPhoneNumberAsync(userPhone).Result.Value.Id;
+
+            if(albumTitle != null)
+            {
+                var resultAlbumTitle =  _unitOfWork.UserRepository.AddAlbumTitle(albumTitle, appUserId);
+            }
             var result = await _unitOfWork.UserRepository.UploadUserImage(selectedOption,files,albumTitle);
             return RedirectToAction("UserProfileDetails"/*, result*/);
         }
@@ -55,6 +61,10 @@ namespace ECommerceWebsite.Controllers
         {
             var photos = _unitOfWork.UserRepository.GetPhotosByAlbum(albumId);
             return Json(photos);
+        }
+        public string AddAlbumTitle(int albumName) 
+        {
+            return "Success";
         }
     }
 }

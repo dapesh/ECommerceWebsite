@@ -2,6 +2,9 @@
 @{
     Layout = null;
 }
+@{
+    var districts = ViewBag.Districts as Dictionary<string, string> ?? new Dictionary<string, string>();
+}
 <style>
     h1 {
         margin: 0 0 20px 0;
@@ -49,6 +52,7 @@
 
                     @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                     {
+                        @Html.HiddenFor(m => m.SelectedDistrict, new { id = "selectedDistrict" })
                         <span class="text-danger">@Html.ValidationMessageFor(m => m.PhoneNumber)</span>
                         <div class="input-group mb-3">
                             @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone Number", required = "required", type = "tel" })
@@ -94,7 +98,13 @@
                                 </div>
                             </div>
                         </div>
-
+                        <select id="districtDropdown"onchange="onDistrictSelected()">
+                            <option value="">Select a district</option>
+                            @foreach (var district in districts)
+                            {
+                                <option value="@district.Key">@district.Value</option>
+                            }
+                        </select>
                         <!-- Repeat similar blocks for other form fields -->
 
                         <div class="row">
@@ -102,6 +112,7 @@
                                 <button type="submit" class="btn btn-primary btn-block">Register</button>
                             </div>
                         </div>
+                        
                     }
                 </div>
             </div>
@@ -146,7 +157,11 @@
             }
         }
 
-
+    function onDistrictSelected() {
+        debugger
+        var selectedDistrict = document.getElementById("districtDropdown").value;
+        document.getElementById("selectedDistrict").value = selectedDistrict;
+    }
 
 </script>
 
