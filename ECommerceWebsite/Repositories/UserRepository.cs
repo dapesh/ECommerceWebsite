@@ -293,12 +293,17 @@ namespace ECommerceWebsite.Repositories
                                         Console.WriteLine(await formData.ReadAsStringAsync());
 
                                         var response = await httpClient.PostAsync(apiUrl, formData);
-                                        if (!response.IsSuccessStatusCode)
+                                        string responseJson = string.Empty;
+                                        if (response.IsSuccessStatusCode)
                                         {
-                                            var responseContent = await response.Content.ReadAsStringAsync();
+                                            responseJson = await response.Content.ReadAsStringAsync();
                                         }
-                                        string responseJson = await response.Content.ReadAsStringAsync();
-                                        dynamic responseObject = JObject.Parse(responseJson);
+                                        else
+                                        {
+                                            responseJson = await response.Content.ReadAsStringAsync();
+
+                                        }
+                                            dynamic responseObject = JObject.Parse(responseJson);
 
                                         if (response.IsSuccessStatusCode)
                                         {

@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        @using (Html.BeginForm("UploadImage", "UserProfile", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("UploadImage", "UserProfile", FormMethod.Post, new { enctype = "multipart/form-data" ,id="userpfimageId"}))
         {
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" value="Upload" class="btn btn-primary">Save changes</button>
+                            <button type="button" onclick="UploadPhoto()" value="Upload" class="btn btn-primary">Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -148,12 +148,12 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label for="albumTitle">Album Title:</label>
-                                    <input type="text" class="form-control" id="albumTitle" name="albumTitle">
+                                    <input type="text" class="form-control" id="albumTitle" name="albumTitle" onkeyup="albumkeyup()" >
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" value="Upload" id="saveAlbum" class="btn btn-primary disabled">Save changes</button>
+                            <button type="button" onclick="SaveAlbum()" value="Upload" id="saveAlbum" class="btn btn-primary" disabled>Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -315,10 +315,9 @@
 <script>
 
     $(document).ready(function () {
-        <label for= "albumTitle" > Album Title: </label>
-            < input type = "text" class="form-control" id = "albumTitle" name = "albumTitle" >
+        //<label for= "albumTitle" > Album Title: </label>
+        //    < input type = "text" class="form-control" id = "albumTitle" name = "albumTitle" >
 
-                <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     const albumTitleInput = document.getElementById('albumTitle');
                     const saveAlbumButton = document.getElementById('saveAlbum');
@@ -340,27 +339,26 @@
                     // Adding an input event listener to the album title input field
                     albumTitleInput.addEventListener('input', toggleButtonState);
                 });
-</script>
 
-        $('#saveAlbum').click(function () {
-            var albumTitle = $('#albumTitle').val();
+        //$('#saveAlbum').click(function () {
+        //    var albumTitle = $('#albumTitle').val();
 
-            $.ajax({
-                url: '/UserProfile/AddAlbumTitle',
-                type: 'POST',
-                data: { albumTitle: albumTitle },
-                success: function (result) {
-                    // Handle success
-                    console.log('Album saved successfully');
-                    // Optionally, close the modal
-                    $('#exampleModalAlbum').modal('hide');
-                },
-                error: function (xhr, status, error) {
-                    // Handle error
-                    console.error('Error saving album');
-                }
-            });
-        });
+        //    $.ajax({
+        //        url: '/UserProfile/AddAlbumTitle',
+        //        type: 'POST',
+        //        data: { albumTitle: albumTitle },
+        //        success: function (result) {
+        //            // Handle success
+        //            console.log('Album saved successfully');
+        //            // Optionally, close the modal
+        //            $('#exampleModalAlbum').modal('hide');
+        //        },
+        //        error: function (xhr, status, error) {
+        //            // Handle error
+        //            console.error('Error saving album');
+        //        }
+        //    });
+        //});
     });
 
         function getPhotosListByAlbum(albumId) {
@@ -377,7 +375,7 @@
             });
         }
 
-    function displayPhotosInCarousel(response) {
+        function displayPhotosInCarousel(response) {
         if (response && Array.isArray(response.value)) {
             var photos = response.value;
             var carouselHtml = '';
@@ -396,15 +394,103 @@
         }
     }
 
-    $('#albumPictureModal').on('shown.bs.modal', function () {
-        $('.carousel').carousel();
-    });
-</script>
-
-<script>
-        $('#albumPictureModal').on('shown.bs.modal', function () {
-            $('.carousel').carousel(); 
+         $('#albumPictureModal').on('shown.bs.modal', function () {
+            $('.carousel').carousel();
         });
+
+         $('#albumPictureModal').on('shown.bs.modal', function () {
+                $('.carousel').carousel(); 
+            });
+
+    function albumkeyup(){
+        var isAlbumEmpty=checkAlbumLen();// if 0 then empty
+        if (isAlbumEmpty==0) {
+          
+            $("#saveAlbum").prop("disabled",true);
+        }
+        else
+        {
+            $("#saveAlbum").prop("disabled", false);
+        }
+    }
+
+    function checkAlbumLen(){
+        var valAlb = $("#albumTitle").val();
+        var lenAlb = 0;
+        if (valAlb == null || valAlb == undefined || valAlb == "")
+        {
+            lenAlb = 0;
+        }
+         else
+         {
+            lenAlb = valAlb.length;
+         }
+            return lenAlb;
+    }
+
+    function SaveAlbum(){
+       debugger;
+        var valAlb = $("#albumTitle").val();
+        $.ajax({
+            url: '/UserProfile/UploadImage',
+            type: 'POST',
+            data: { albumTitle: valAlb },
+            success: function (result) {
+                // Handle success
+                console.log('Album saved successfully');
+                // Optionally, close the modal
+                $('#exampleModalAlbum').modal('hide');
+                $('#exampleModalAlbum').removeClass('fade');
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                console.error('Error saving album');
+            }
+        });
+    
+    }
+
+    function UploadPhoto(){
+        debugger;
+        var drpVal = $("#dropdown").val();
+        var files = $('#photos')[0].files;
+        //var fileInput = $('#photos')[0];
+        var formData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
+        //formData.append('files', fileInput.files[0]);
+        formData.append('selectedOption', drpVal);
+
+        var textVal = $("#dropdown option:selected").text();
+        formData.append('albumTitle', textVal);
+
+        $.ajax({
+            url: '/UserProfile/UploadImage',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                $(document).Toasts('create', {
+                    class: "bg-success",
+                    body: "Image Saved Successfully!"
+                })
+                $('#exampleModal').modal('hide');
+                $('#exampleModal').removeClass('fade');
+                location.reload();
+
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                $(document).Toasts('create', {
+                    class: "bg-danger",
+                    body: "Error uploading image!"
+                })
+            }
+        });
+    }
 </script>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
