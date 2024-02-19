@@ -24,7 +24,9 @@ namespace ECommerceWebsite.Controllers
         [HttpGet]
         public IActionResult UserProfileDetails() 
         {
-            var defaultAlbums = _unitOfWork.UserRepository.GetDropdownForDefaultAlbum();
+            var userPhone = _unitOfWork.TokenService.GetUserDetailsFromToken("mobilephone");
+            var appUserId = _unitOfWork.UserRepository.GetUserByPhoneNumberAsync(userPhone).Result.Value.Id;
+            var defaultAlbums = _unitOfWork.UserRepository.GetDropdownForDefaultAlbum(appUserId);
             var dropdownItems = defaultAlbums.Select(albums => new SelectListItem
             {
                 Value = albums.IsMainPicture.ToString(),

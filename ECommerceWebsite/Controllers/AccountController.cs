@@ -26,7 +26,7 @@ namespace ECommerceWebsite.Controllers
         public IActionResult Register()
         {
             var districts = new Dictionary<string, string>
-        {
+            {
             { "Achham", "Achham" }, { "Arghakhanchi", "Arghakhanchi" }, { "Baglung", "Baglung" },
             { "Baitadi", "Baitadi" }, { "Bajhang", "Bajhang" }, { "Bajura", "Bajura" },
             { "Banke", "Banke" }, { "Bara", "Bara" }, { "Bardiya", "Bardiya" },
@@ -51,7 +51,7 @@ namespace ECommerceWebsite.Controllers
             { "Siraha", "Siraha" }, { "Solukhumbu", "Solukhumbu" }, { "Sunsari", "Sunsari" },
             { "Surkhet", "Surkhet" }, { "Syangja", "Syangja" }, { "Tanahu", "Tanahu" },
             { "Taplejung", "Taplejung" }, { "Terhathum", "Terhathum" }, { "Udayapur", "Udayapur" }
-        };
+            };
             ViewBag.Districts = districts;
             return View();
         }

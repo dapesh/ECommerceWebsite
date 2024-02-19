@@ -375,9 +375,9 @@ namespace ECommerceWebsite.Repositories
             };
         }
 
-        public List<Album> GetDropdownForDefaultAlbum()
+        public List<Album> GetDropdownForDefaultAlbum(int appUserId)
         {
-            return _db.Albums.Where(a=>a.IsDefaultAlbum==true &&a.IsDeleted==false).ToList();
+            return _db.Albums.Where(a=>a.IsDefaultAlbum==true &&a.IsDeleted==false && a.AppUserId==appUserId).ToList();
 
         }
 
