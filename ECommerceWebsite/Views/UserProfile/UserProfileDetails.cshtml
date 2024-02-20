@@ -91,10 +91,15 @@
                         Upload Photo
                     </button>
                 </div>
+                <div class="col-md-4">
+                    <!-- Button to Open Full-Size Profile Picture -->
+                    <button type="button" id="editProfileBtn" class="btn btn-primary" onclick="EditProfilePicture()">Edit Profile</button>
+                </div>
             </div>
         </div>
         @using (Html.BeginForm("UploadImage", "UserProfile", FormMethod.Post, new { enctype = "multipart/form-data" ,id="userpfimageId"}))
         {
+            <input type="hidden" id="appUserId" name="appUserId" value="@ViewBag.appUserId">
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -450,7 +455,7 @@
         });
     
     }
-
+    
     function UploadPhoto(){
         debugger;
         var drpVal = $("#dropdown").val();
@@ -491,6 +496,30 @@
             }
         });
     }
+
+    function EditProfilePicture() {
+        debugger
+        var appUserId = "@ViewBag.appUserId"
+        $.ajax({
+            url: '/UserProfile/EditUserProfile',
+            type: 'POST',
+            data: { appUserId: appUserId },
+            success: function (result) {
+                console.log('Album saved successfully');
+                $('#exampleModalAlbum').modal('hide');
+                $('#exampleModalAlbum').removeClass('fade');
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error saving album');
+            }
+        });
+
+    }
+    $('#editProfileBtn').click(function () {
+        var appUserId = "@ViewBag.appUserId"
+        window.location.href = '@Url.Action("EditUserProfile", "UserProfile")'+appUserId;
+    });
 </script>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
