@@ -41,9 +41,7 @@ namespace ECommerceWebsite.Controllers
                 var UserId = users.User.Id;
                 albumsWithPhotos=_unitOfWork.UserRepository.GetAlbumDetails(UserId);
             }
-         
-
-
+            ViewBag.appUserId = appUserId;
             return View(albumsWithPhotos);
         }
         [HttpPost]
@@ -67,6 +65,18 @@ namespace ECommerceWebsite.Controllers
         public string AddAlbumTitle(int albumName) 
         {
             return "Success";
+        }
+        public ActionResult EditUserProfile()
+        {
+            var userPhone = _unitOfWork.TokenService.GetUserDetailsFromToken("mobilephone");
+            var appUserId = _unitOfWork.UserRepository.GetUserByPhoneNumberAsync(userPhone).Result.Value.Id;
+            ViewBag.appUserId = appUserId;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult EditUserProfile(string appUserId)
+        {
+            return View();
         }
     }
 }
